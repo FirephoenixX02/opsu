@@ -35,16 +35,16 @@ public class NerinyanServer extends DownloadServer {
 
 	private static final String DOWNLOAD_URL = "https://api.nerinyan.moe/d/%d";
 
-	private static final String SEARCH_URL = "https://api.nerinyan.moe/search?q=%s&ps=&d";
+	private static final String SEARCH_URL = "https://api.nerinyan.moe/search?q=%s&ps=%d";
 
-	private static final String HOME_URL = "https://api.nerinyan.moe/search/?p=%d";
+	private static final String HOME_URL = "https://api.nerinyan.moe/search/?p=%s";
 
 	/**
 	 * Maximum beatmaps displayed per page.
-	 * Supports up to 1000, but response sizes become very large (>100KB).
+	 * Supports up to 1000, but response sizes become very large (>5MB).
 	 */
 
-	private static final int PAGE_LIMIT = 20;
+	private static final int PAGE_LIMIT = 50;
 
 	private int totalResults = -1;
 
@@ -69,11 +69,10 @@ public class NerinyanServer extends DownloadServer {
 			// read JSON
 			int resultIndex = (page - 1) * PAGE_LIMIT;
 			String search;
-			//String search = String.format(SEARCH_URL, URLEncoder.encode(query, "UTF-8"), PAGE_LIMIT);
 			if (query.isEmpty()) {
-				search = String.format(HOME_URL, resultIndex);
+				search = String.format(HOME_URL, page);
 			} else {
-				search = String.format(SEARCH_URL, URLEncoder.encode(query, "UTF-8"), resultIndex);
+				search = String.format(SEARCH_URL, URLEncoder.encode(query, "UTF-8"), 50);
 			}
 			JSONArray arr = Utils.readJsonArrayFromUrl(new URL(search));
 			if (arr == null) {
@@ -107,7 +106,7 @@ public class NerinyanServer extends DownloadServer {
 
 	@Override
 	public int minQueryLength() {
-		return 50;
+		return 3;
 	}
 
 	@Override

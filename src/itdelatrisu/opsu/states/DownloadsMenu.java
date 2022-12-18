@@ -178,7 +178,7 @@ public class DownloadsMenu extends BasicGameState {
 	private String searchResultString;
 
 	/**
-	 * Whether or not the search timer has been manually reset; reset after search delay passes.
+	 * Whether the search timer has been manually reset; reset after search delay passes.
 	 */
 	private boolean searchTimerReset = false;
 
