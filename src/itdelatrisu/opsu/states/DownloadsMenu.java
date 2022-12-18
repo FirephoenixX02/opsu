@@ -32,11 +32,7 @@ import itdelatrisu.opsu.beatmap.OszUnpacker;
 import itdelatrisu.opsu.downloads.Download;
 import itdelatrisu.opsu.downloads.DownloadList;
 import itdelatrisu.opsu.downloads.DownloadNode;
-import itdelatrisu.opsu.downloads.servers.BloodcatServer;
-import itdelatrisu.opsu.downloads.servers.DownloadServer;
-import itdelatrisu.opsu.downloads.servers.HexideServer;
-import itdelatrisu.opsu.downloads.servers.MnetworkServer;
-import itdelatrisu.opsu.downloads.servers.RippleServer;
+import itdelatrisu.opsu.downloads.servers.*;
 import itdelatrisu.opsu.options.Options;
 import itdelatrisu.opsu.ui.Colors;
 import itdelatrisu.opsu.ui.DropdownMenu;
@@ -76,63 +72,100 @@ import org.newdawn.slick.util.Log;
  * from this state.
  */
 public class DownloadsMenu extends BasicGameState {
-	/** Delay time, in milliseconds, between each search. */
+	/**
+	 * Delay time, in milliseconds, between each search.
+	 */
 	private static final int SEARCH_DELAY = 700;
 
-	/** Delay time, in milliseconds, for double-clicking focused result. */
+	/**
+	 * Delay time, in milliseconds, for double-clicking focused result.
+	 */
 	private static final int FOCUS_DELAY = 250;
 
-	/** Minimum time, in milliseconds, that must elapse between queries. */
+	/**
+	 * Minimum time, in milliseconds, that must elapse between queries.
+	 */
 	private static final int MIN_REQUEST_INTERVAL = 300;
 
-	/** Available beatmap download servers. */
+	/**
+	 * Available beatmap download servers.
+	 */
 	private static final DownloadServer[] SERVERS = {
-		new RippleServer(),
-		new MnetworkServer(),
-		new HexideServer(),
-		new BloodcatServer()
+			new RippleServer(),
+			new MnetworkServer(),
+			new HexideServer(),
+			new BloodcatServer(),
+			new YaSOnlineServer()
 	};
 
-	/** The current list of search results. */
+	/**
+	 * The current list of search results.
+	 */
 	private DownloadNode[] resultList;
 
-	/** Current focused (selected) result. */
+	/**
+	 * Current focused (selected) result.
+	 */
 	private int focusResult = -1;
 
-	/** Delay time, in milliseconds, for double-clicking focused result. */
+	/**
+	 * Delay time, in milliseconds, for double-clicking focused result.
+	 */
 	private int focusTimer = 0;
 
-	/** Current start result button (topmost entry). */
+	/**
+	 * Current start result button (topmost entry).
+	 */
 	private final KineticScrolling startResultPos = new KineticScrolling();
 
-	/** Total number of results for current query. */
+	/**
+	 * Total number of results for current query.
+	 */
 	private int totalResults = 0;
 
-	/** Page of current query results. */
+	/**
+	 * Page of current query results.
+	 */
 	private int page = 1;
 
-	/** Total number of results across pages seen so far. */
+	/**
+	 * Total number of results across pages seen so far.
+	 */
 	private int pageResultTotal = 0;
 
-	/** Page navigation. */
-	private enum Page { RESET, CURRENT, PREVIOUS, NEXT }
+	/**
+	 * Page navigation.
+	 */
+	private enum Page {RESET, CURRENT, PREVIOUS, NEXT}
 
-	/** Page direction for next query. */
+	/**
+	 * Page direction for next query.
+	 */
 	private Page pageDir = Page.RESET;
 
-	/** Whether to only show ranked maps. */
+	/**
+	 * Whether to only show ranked maps.
+	 */
 	private boolean rankedOnly = true;
 
-	/** Current start download index. */
+	/**
+	 * Current start download index.
+	 */
 	private final KineticScrolling startDownloadIndexPos = new KineticScrolling();
 
-	/** Query thread. */
+	/**
+	 * Query thread.
+	 */
 	private Thread queryThread;
 
-	/** The search textfield. */
+	/**
+	 * The search textfield.
+	 */
 	private TextField search;
 
-	/** The search font. */
+	/**
+	 * The search font.
+	 */
 	private UnicodeFont searchFont;
 
 	/**
@@ -141,56 +174,89 @@ public class DownloadsMenu extends BasicGameState {
 	 */
 	private int searchTimer;
 
-	/** Information text to display based on the search query. */
+	/**
+	 * Information text to display based on the search query.
+	 */
 	private String searchResultString;
 
-	/** Whether or not the search timer has been manually reset; reset after search delay passes. */
+	/**
+	 * Whether or not the search timer has been manually reset; reset after search delay passes.
+	 */
 	private boolean searchTimerReset = false;
 
-	/** The last search query. */
+	/**
+	 * The last search query.
+	 */
 	private String lastQuery;
 
-	/** Page direction for last query. */
+	/**
+	 * Page direction for last query.
+	 */
 	private Page lastQueryDir = Page.RESET;
 
-	/** Previous and next page buttons. */
+	/**
+	 * Previous and next page buttons.
+	 */
 	private MenuButton prevPage, nextPage;
 
-	/** Buttons. */
+	/**
+	 * Buttons.
+	 */
 	private MenuButton clearButton, importButton, resetButton, rankedButton;
 
-	/** Dropdown menu. */
+	/**
+	 * Dropdown menu.
+	 */
 	private DropdownMenu<DownloadServer> serverMenu;
 
-	/** Beatmap importing thread. */
+	/**
+	 * Beatmap importing thread.
+	 */
 	private BeatmapImportThread importThread;
 
-	/** Beatmap set ID of the current beatmap being previewed, or -1 if none. */
+	/**
+	 * Beatmap set ID of the current beatmap being previewed, or -1 if none.
+	 */
 	private int previewID = -1;
 
-	/** The bar notification to send upon entering the state. */
+	/**
+	 * The bar notification to send upon entering the state.
+	 */
 	private String barNotificationOnLoad;
 
-	/** Search query, executed in {@code queryThread}. */
+	/**
+	 * Search query, executed in {@code queryThread}.
+	 */
 	private SearchQuery searchQuery;
 
-	/** Search query helper class. */
+	/**
+	 * Search query helper class.
+	 */
 	private class SearchQuery implements Runnable {
-		/** The search query. */
+		/**
+		 * The search query.
+		 */
 		private final String query;
 
-		/** The download server. */
+		/**
+		 * The download server.
+		 */
 		private final DownloadServer server;
 
-		/** Whether the query was interrupted. */
+		/**
+		 * Whether the query was interrupted.
+		 */
 		private boolean interrupted = false;
 
-		/** Whether the query has completed execution. */
+		/**
+		 * Whether the query has completed execution.
+		 */
 		private boolean complete = false;
 
 		/**
 		 * Constructor.
-		 * @param query the search query
+		 *
+		 * @param query  the search query
 		 * @param server the download server
 		 */
 		public SearchQuery(String query, DownloadServer server) {
@@ -198,11 +264,19 @@ public class DownloadsMenu extends BasicGameState {
 			this.server = server;
 		}
 
-		/** Interrupt the query and prevent the results from being processed, if not already complete. */
-		public void interrupt() { interrupted = true; }
+		/**
+		 * Interrupt the query and prevent the results from being processed, if not already complete.
+		 */
+		public void interrupt() {
+			interrupted = true;
+		}
 
-		/** Returns whether the query has completed execution. */
-		public boolean isComplete() { return complete; }
+		/**
+		 * Returns whether the query has completed execution.
+		 */
+		public boolean isComplete() {
+			return complete;
+		}
 
 		@Override
 		public void run() {
@@ -257,19 +331,33 @@ public class DownloadsMenu extends BasicGameState {
 		}
 	}
 
-	/** Thread for importing packed beatmaps. */
+	/**
+	 * Thread for importing packed beatmaps.
+	 */
 	private class BeatmapImportThread extends Thread {
-		/** Whether this thread has completed execution. */
+		/**
+		 * Whether this thread has completed execution.
+		 */
 		private boolean finished = false;
 
-		/** The last imported beatmap set node, if any. */
+		/**
+		 * The last imported beatmap set node, if any.
+		 */
 		private BeatmapSetNode importedNode;
 
-		/** Returns true only if this thread has completed execution. */
-		public boolean isFinished() { return finished; }
+		/**
+		 * Returns true only if this thread has completed execution.
+		 */
+		public boolean isFinished() {
+			return finished;
+		}
 
-		/** Returns an imported beatmap set node, or null if none. */
-		public BeatmapSetNode getImportedBeatmap() { return importedNode; }
+		/**
+		 * Returns an imported beatmap set node, or null if none.
+		 */
+		public BeatmapSetNode getImportedBeatmap() {
+			return importedNode;
+		}
 
 		@Override
 		public void run() {
@@ -280,7 +368,9 @@ public class DownloadsMenu extends BasicGameState {
 			}
 		}
 
-		/** Imports all packed beatmaps. */
+		/**
+		 * Imports all packed beatmaps.
+		 */
 		private void importBeatmaps() {
 			// invoke unpacker and parser
 			File[] dirs = OszUnpacker.unpackAllFiles(Options.getImportDir(), Options.getBeatmapDir());
@@ -574,7 +664,7 @@ public class DownloadsMenu extends BasicGameState {
 		rankedButton.hoverUpdate(delta, mouseX, mouseY);
 
 		if (DownloadList.get() != null)
-			startDownloadIndexPos.setMinMax(0, DownloadNode.getInfoHeight() * (DownloadList.get().size() -  DownloadNode.maxDownloadsShown()));
+			startDownloadIndexPos.setMinMax(0, DownloadNode.getInfoHeight() * (DownloadList.get().size() - DownloadNode.maxDownloadsShown()));
 		startDownloadIndexPos.update(delta);
 		if (resultList != null)
 			startResultPos.setMinMax(0, DownloadNode.getButtonOffset() * (resultList.length - DownloadNode.maxResultsShown()));
@@ -594,7 +684,7 @@ public class DownloadsMenu extends BasicGameState {
 			String query = search.getText().trim().toLowerCase();
 			DownloadServer server = serverMenu.getSelectedItem();
 			if ((!query.equals(lastQuery)) &&
-			    (query.length() == 0 || query.length() >= server.minQueryLength())) {
+					(query.length() == 0 || query.length() >= server.minQueryLength())) {
 				lastQuery = query;
 				lastQueryDir = pageDir;
 
@@ -621,7 +711,9 @@ public class DownloadsMenu extends BasicGameState {
 	}
 
 	@Override
-	public int getID() { return state; }
+	public int getID() {
+		return state;
+	}
 
 	@Override
 	public void mousePressed(int button, int x, int y) {
@@ -683,17 +775,17 @@ public class DownloadsMenu extends BasicGameState {
 										try {
 											previewID = -1;
 											boolean playing = SoundController.playTrack(
-												url,
-												String.format("%d.mp3", node.getID()),
+													url,
+													String.format("%d.mp3", node.getID()),
 													new LineListener() {
-													@Override
-													public void update(LineEvent event) {
-														if (event.getType() == LineEvent.Type.STOP) {
-															if (previewID != -1)
-																previewID = -1;
+														@Override
+														public void update(LineEvent event) {
+															if (event.getType() == LineEvent.Type.STOP) {
+																if (previewID != -1)
+																	previewID = -1;
+															}
 														}
 													}
-												}
 											);
 											if (playing)
 												previewID = node.getID();
@@ -813,16 +905,16 @@ public class DownloadsMenu extends BasicGameState {
 						return;
 					Download dl = node.getDownload();
 					switch (dl.getStatus()) {
-					case CANCELLED:
-					case COMPLETE:
-					case ERROR:
-						node.clearDownload();
-						DownloadList.get().remove(index);
-						break;
-					case DOWNLOADING:
-					case WAITING:
-						dl.cancel();
-						break;
+						case CANCELLED:
+						case COMPLETE:
+						case ERROR:
+							node.clearDownload();
+							DownloadList.get().remove(index);
+							break;
+						case DOWNLOADING:
+						case WAITING:
+							dl.cancel();
+							break;
 					}
 					return;
 				}
@@ -862,7 +954,7 @@ public class DownloadsMenu extends BasicGameState {
 
 		// check mouse button
 		if (!input.isMouseButtonDown(Input.MOUSE_RIGHT_BUTTON) &&
-			!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON))
+				!input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON))
 			return;
 
 		int diff = newy - oldy;
@@ -882,48 +974,48 @@ public class DownloadsMenu extends BasicGameState {
 			return;
 
 		switch (key) {
-		case Input.KEY_ESCAPE:
-			if (importThread != null) {
-				// beatmap importing: stop parsing beatmaps by sending interrupt to BeatmapParser
-				importThread.interrupt();
-			} else if (!search.getText().isEmpty()) {
-				// clear search text
-				search.setText("");
-				pageDir = Page.RESET;
+			case Input.KEY_ESCAPE:
+				if (importThread != null) {
+					// beatmap importing: stop parsing beatmaps by sending interrupt to BeatmapParser
+					importThread.interrupt();
+				} else if (!search.getText().isEmpty()) {
+					// clear search text
+					search.setText("");
+					pageDir = Page.RESET;
+					resetSearchTimer();
+				} else {
+					// return to main menu
+					SoundController.playSound(SoundEffect.MENUBACK);
+					((MainMenu) game.getState(Opsu.STATE_MAINMENU)).reset();
+					game.enterState(Opsu.STATE_MAINMENU, new EasedFadeOutTransition(), new FadeInTransition());
+				}
+				break;
+			case Input.KEY_ENTER:
+				if (!search.getText().isEmpty()) {
+					pageDir = Page.RESET;
+					resetSearchTimer();
+				}
+				break;
+			case Input.KEY_F5:
+				SoundController.playSound(SoundEffect.MENUCLICK);
+				lastQuery = null;
+				pageDir = Page.CURRENT;
+				if (searchQuery != null)
+					searchQuery.interrupt();
 				resetSearchTimer();
-			} else {
-				// return to main menu
-				SoundController.playSound(SoundEffect.MENUBACK);
-				((MainMenu) game.getState(Opsu.STATE_MAINMENU)).reset();
-				game.enterState(Opsu.STATE_MAINMENU, new EasedFadeOutTransition(), new FadeInTransition());
-			}
-			break;
-		case Input.KEY_ENTER:
-			if (!search.getText().isEmpty()) {
-				pageDir = Page.RESET;
-				resetSearchTimer();
-			}
-			break;
-		case Input.KEY_F5:
-			SoundController.playSound(SoundEffect.MENUCLICK);
-			lastQuery = null;
-			pageDir = Page.CURRENT;
-			if (searchQuery != null)
-				searchQuery.interrupt();
-			resetSearchTimer();
-			break;
-		default:
-			// wait for user to finish typing
-			if (Character.isLetterOrDigit(c) || key == Input.KEY_BACK || key == Input.KEY_SPACE) {
-				// load glyphs
-				if (c > 255)
-					Fonts.loadGlyphs(searchFont, c);
+				break;
+			default:
+				// wait for user to finish typing
+				if (Character.isLetterOrDigit(c) || key == Input.KEY_BACK || key == Input.KEY_SPACE) {
+					// load glyphs
+					if (c > 255)
+						Fonts.loadGlyphs(searchFont, c);
 
-				// reset search timer
-				searchTimer = 0;
-				pageDir = Page.RESET;
-			}
-			break;
+					// reset search timer
+					searchTimer = 0;
+					pageDir = Page.RESET;
+				}
+				break;
 		}
 	}
 
@@ -975,8 +1067,9 @@ public class DownloadsMenu extends BasicGameState {
 	/**
 	 * Processes a shift in the search result and downloads list start indices,
 	 * if the mouse coordinates are within the area bounds.
-	 * @param cx the x coordinate
-	 * @param cy the y coordinate
+	 *
+	 * @param cx    the x coordinate
+	 * @param cy    the y coordinate
 	 * @param shift the number of indices to shift
 	 */
 	private void scrollLists(int cx, int cy, int shift) {
@@ -984,19 +1077,23 @@ public class DownloadsMenu extends BasicGameState {
 		if (DownloadNode.resultAreaContains(cx, cy))
 			startResultPos.scrollOffset(shift * DownloadNode.getButtonOffset());
 
-		// downloads
+			// downloads
 		else if (DownloadNode.downloadAreaContains(cx, cy))
 			startDownloadIndexPos.scrollOffset(shift * DownloadNode.getInfoHeight());
 	}
 
 	/**
 	 * Sends a bar notification upon entering the state.
+	 *
 	 * @param s the notification string
 	 */
-	public void notifyOnLoad(String s) { barNotificationOnLoad = s; }
+	public void notifyOnLoad(String s) {
+		barNotificationOnLoad = s;
+	}
 
 	/**
 	 * Downloads the given beatmap.
+	 *
 	 * @param node the download node
 	 */
 	private void downloadBeatmap(final DownloadNode node) {
@@ -1006,16 +1103,16 @@ public class DownloadsMenu extends BasicGameState {
 		// download in browser
 		if (server.isDownloadInBrowser()) {
 			final String importText = String.format(
-				"Save the beatmap in the Import folder and then click \"Import All\":\n%s",
-				Options.getImportDir().getAbsolutePath()
+					"Save the beatmap in the Import folder and then click \"Import All\":\n%s",
+					Options.getImportDir().getAbsolutePath()
 			);
 			if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
 				// launch browser
 				try {
 					Desktop.getDesktop().browse(new URI(downloadURL));
 					UI.getNotificationManager().sendNotification(String.format(
-						"Opened a web browser to download \"%s\".\n\n%s",
-						node.getTitle(), importText
+							"Opened a web browser to download \"%s\".\n\n%s",
+							node.getTitle(), importText
 					));
 				} catch (IOException | URISyntaxException e) {
 					ErrorHandler.error("Failed to launch browser.", e, true);
@@ -1029,7 +1126,8 @@ public class DownloadsMenu extends BasicGameState {
 						try {
 							Utils.copyToClipboard(downloadURL);
 							UI.getNotificationManager().sendNotification(importText);
-						} catch (Exception e) {}
+						} catch (Exception e) {
+						}
 					}
 				});
 			}
