@@ -92,9 +92,6 @@ public class DownloadsMenu extends BasicGameState {
 	 */
 	private static final DownloadServer[] SERVERS = {
 			new RippleServer(),
-			new MnetworkServer(),
-			new HexideServer(),
-			new BloodcatServer(),
 			new YaSOnlineServer()
 	};
 

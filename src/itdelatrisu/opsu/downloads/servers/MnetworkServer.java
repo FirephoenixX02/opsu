@@ -37,6 +37,7 @@ import org.newdawn.slick.util.Log;
 
 /**
  * Download server: http://osu.uu.gl/
+ * This Server is not available anymore.
  */
 public class MnetworkServer extends DownloadServer {
 	/** Server name. */

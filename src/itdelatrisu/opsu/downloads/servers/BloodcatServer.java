@@ -41,6 +41,7 @@ import org.newdawn.slick.util.Log;
  * Download server: http://bloodcat.com/osu/
  * <p>
  * <i>This server uses captchas as of March 2017.</i>
+ * This Server is not available anymore.
  */
 public class BloodcatServer extends DownloadServer {
 	/** Server name. */
