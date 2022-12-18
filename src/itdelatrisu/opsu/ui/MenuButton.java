@@ -90,7 +90,7 @@ public class MenuButton {
 	private Expand dir = Expand.CENTER;
 
 	/** Scaled expansion directions. */
-	public enum Expand { CENTER, UP, RIGHT, LEFT, DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT; }
+	public enum Expand { CENTER, UP, RIGHT, LEFT, DOWN, UP_RIGHT, UP_LEFT, DOWN_RIGHT, DOWN_LEFT}
 
 	/** The rotation angle of the button. */
 	private AnimatedValue angle;

@@ -58,7 +58,7 @@ public class SoundController {
 		 * Returns the Clip associated with the sound component.
 		 * @return the Clip
 		 */
-		public MultiClip getClip();
+		MultiClip getClip();
 	}
 
 	/** The current track being played, if any. */

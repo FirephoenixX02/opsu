@@ -38,6 +38,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -898,7 +899,7 @@ public class Options {
 		 * @return true if visible
 		 */
 		public boolean isVisible() { return visible; }
-	};
+	}
 
 	/** Map of option display names to GameOptions. */
 	private static HashMap<String, GameOption> optionMap;
@@ -924,7 +925,8 @@ public class Options {
 		RES_3840_2160 (3840, 2160);
 
 		/** Screen dimensions. */
-		private int width, height;
+		private final int width;
+		private final int height;
 
 		/**
 		 * Constructor.
@@ -975,7 +977,7 @@ public class Options {
 	private static int targetFPSindex = 0;
 
 	/** Screenshot file formats. */
-	private static String[] screenshotFormat = { "png", "jpg", "bmp" };
+	private static final String[] screenshotFormat = { "png", "jpg", "bmp" };
 
 	/** Index in screenshotFormat[] array. */
 	private static int screenshotFormatIndex = 0;
@@ -1631,7 +1633,7 @@ public class Options {
 	 */
 	public static void saveOptions() {
 		try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(OPTIONS_FILE), "utf-8"))) {
+				new FileOutputStream(OPTIONS_FILE), StandardCharsets.UTF_8))) {
 			// header
 			SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM dd, yyyy");
 			String date = dateFormat.format(new Date());

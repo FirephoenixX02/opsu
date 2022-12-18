@@ -134,7 +134,7 @@ public class BeatmapWatchService {
 		 * @param kind the event kind
 		 * @param child the child directory
 		 */
-		public void eventReceived(WatchEvent.Kind<?> kind, Path child);
+		void eventReceived(WatchEvent.Kind<?> kind, Path child);
 	}
 
 	/** The list of listeners. */
@@ -203,13 +203,13 @@ public class BeatmapWatchService {
 					try {
 						register(dir);
 					} catch (IOException e) {
-						Log.warn(String.format("Failed to register path '%s' with the watch service.", dir.toString()), e);
+						Log.warn(String.format("Failed to register path '%s' with the watch service.", dir), e);
 					}
 					return FileVisitResult.CONTINUE;
 				}
 			});
 		} catch (IOException e) {
-			Log.warn(String.format("Failed to register paths from root directory '%s' with the watch service.", start.toString()), e);
+			Log.warn(String.format("Failed to register paths from root directory '%s' with the watch service.", start), e);
 		}
 	}
 

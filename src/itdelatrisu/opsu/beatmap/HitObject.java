@@ -88,16 +88,17 @@ public class HitObject {
 	public static void setStackOffset(float offset) { stackOffset = offset; }
 
 	/** Starting coordinates. */
-	private float x, y;
+	private final float x;
+    private final float y;
 
 	/** Start time (in ms). */
-	private int time;
+	private final int time;
 
 	/** Hit object type (TYPE_* bitmask). */
-	private int type;
+	private final int type;
 
 	/** Hit sound type (SOUND_* bitmask). */
-	private short hitSound;
+	private final short hitSound;
 
 	/** Hit sound addition (sampleSet, AdditionSampleSet). */
 	private byte[] addition;
@@ -201,7 +202,7 @@ public class HitObject {
 		 *
 		 * NOTE: 'addition' -> sampl:add:cust:vol:hitsound (optional, defaults to "0:0:0:0:")
 		 */
-		String tokens[] = line.split(",");
+		String[] tokens = line.split(",");
 
 		// common fields
 		this.x = Float.parseFloat(tokens[0]);

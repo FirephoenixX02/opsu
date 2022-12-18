@@ -61,7 +61,7 @@ public class Beatmap implements Comparable<Beatmap> {
 	public static void clearBackgroundImageCache() { bgImageCache.clear(); }
 
 	/** The OSU File object associated with this beatmap. */
-	private File file;
+	private final File file;
 
 	/** MD5 hash of this file. */
 	public String md5Hash;
@@ -404,7 +404,7 @@ public class Beatmap implements Comparable<Beatmap> {
 	 */
 	@Override
 	public String toString() {
-		if (!source.isEmpty()) 
+		if (!source.isEmpty())
 			return String.format("%s (%s) - %s [%s]", source, getArtist(), getTitle(), version);
 
 		return String.format("%s - %s [%s]", getArtist(), getTitle(), version);

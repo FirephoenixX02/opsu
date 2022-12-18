@@ -60,7 +60,7 @@ public class MultiClip {
 	private LinkedList<Clip> clips = new LinkedList<Clip>();
 
 	/** The audio input stream. */
-	private AudioInputStream audioIn;
+	private final AudioInputStream audioIn;
 
 	/** The format of this audio sample. */
 	private AudioFormat format;

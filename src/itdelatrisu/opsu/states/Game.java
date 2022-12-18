@@ -306,7 +306,7 @@ public class Game extends BasicGameState {
 	private boolean gameFinished = false;
 
 	/** Timer after game has finished, before changing states. */
-	private AnimatedValue gameFinishedTimer = new AnimatedValue(2500, 0, 1, AnimationEquation.LINEAR);
+	private final AnimatedValue gameFinishedTimer = new AnimatedValue(2500, 0, 1, AnimationEquation.LINEAR);
 
 	/** The HP drop rate. */
 	private float hpDropRate = 0.05f;
@@ -327,7 +327,7 @@ public class Game extends BasicGameState {
 	private FakeCombinedCurve mergedSlider;
 
 	/** The objects holding data for the input overlay. */
-	private InputOverlayKey[] inputOverlayKeys;
+	private final InputOverlayKey[] inputOverlayKeys;
 
 	/** Music position bar background colors. */
 	private static final Color
@@ -1538,9 +1538,7 @@ public class Game extends BasicGameState {
 				HitObject hitObject = beatmap.objects[i];
 
 				// is this the last note in the combo?
-				boolean comboEnd = false;
-				if (i + 1 >= beatmap.objects.length || beatmap.objects[i + 1].isNewCombo())
-					comboEnd = true;
+				boolean comboEnd = i + 1 >= beatmap.objects.length || beatmap.objects[i + 1].isNewCombo();
 
 				// calculate color index if ignoring beatmap skin
 				Color color;
@@ -1576,7 +1574,7 @@ public class Game extends BasicGameState {
 				} catch (Exception e) {
 					// try to handle the error gracefully: substitute in a dummy GameObject
 					ErrorHandler.error(String.format("Failed to create %s at index %d:\n%s",
-							hitObject.getTypeName(), i, hitObject.toString()), e, true);
+							hitObject.getTypeName(), i, hitObject), e, true);
 					gameObjects[i] = new DummyObject(hitObject);
 					continue;
 				}

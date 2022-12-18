@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2013, Slick2D
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  * - Redistributions of source code must retain the above copyright notice,
@@ -12,7 +12,7 @@
  * - Neither the name of the Slick2D nor the names of its contributors may be
  *   used to endorse or promote products derived from this software without
  *   specific prior written permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -47,22 +47,22 @@ import org.newdawn.slick.util.Log;
  */
 public class Mp3InputStream extends InputStream implements AudioInputStream {
 	/** The MPEG audio bitstream. */
-	private Bitstream bitstream;
+	private final Bitstream bitstream;
 
 	/** The MPEG decoder. */
-	private Decoder decoder;
+	private final Decoder decoder;
 
 	/** The frame header extractor. */
 	private Header header;
 
 	/** The buffer. */
-	private SampleBuffer buf;
+	private final SampleBuffer buf;
 
 	/** The number of channels. */
-	private int channels;
+	private final int channels;
 
 	/** The sample rate. */
-	private int sampleRate;
+	private final int sampleRate;
 
 	/** The buffer length. */
 	private int bufLen = 0;
@@ -174,7 +174,7 @@ public class Mp3InputStream extends InputStream implements AudioInputStream {
 			Log.warn("Mp3InputStream: skip: bufLen not yet determined.");
 
 		int skipped = 0;
-		while (skipped + bufLen * 2 < length) {
+		while (skipped + bufLen * 2L < length) {
 			try {
 				header = bitstream.readFrame();
 				if (header == null) {
@@ -184,7 +184,7 @@ public class Mp3InputStream extends InputStream implements AudioInputStream {
 				}
 
 				// last frame that won't be skipped so better read it
-				if (skipped + bufLen * 2 * 4 >= length || bufLen <= 0) {
+				if (skipped + (long) bufLen * 2 * 4 >= length || bufLen <= 0) {
 					buf.clear_buffer();
 					decoder.decodeFrame(header, bitstream);
 					bufLen = buf.getBufferLength();
@@ -197,7 +197,7 @@ public class Mp3InputStream extends InputStream implements AudioInputStream {
 				Log.error(e);
 			}
 		}
-		if (bufLen * 2 - bpos > length - skipped) {
+		if (bufLen * 2L - bpos > length - skipped) {
 			bpos += length - skipped;
 			skipped += length - skipped;
 		}

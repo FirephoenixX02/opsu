@@ -42,123 +42,123 @@ import org.newdawn.slick.Image;
  * Data type representing a slider object.
  */
 public class Slider implements GameObject {
-	/** Slider ball frames. */
+	/**
+	 * Slider ball frames.
+	 */
 	private static Image[] sliderBallImages;
 
-	/** Slider movement speed multiplier. */
+	/**
+	 * Slider movement speed multiplier.
+	 */
 	private static float sliderMultiplier = 1.0f;
 
-	/** Rate at which slider ticks are placed. */
+	/**
+	 * Rate at which slider ticks are placed.
+	 */
 	private static float sliderTickRate = 1.0f;
 
-	/** Follow circle radius. */
+	/**
+	 * Follow circle radius.
+	 */
 	private static float followRadius;
 
-	/** The diameter of hit circles. */
-	private static float diameter;
-
-	/** The associated HitObject. */
-	private HitObject hitObject;
-
-	/** The scaled starting x, y coordinates. */
-	protected float x, y;
-
-	/** The associated Game object. */
-	private Game game;
-
-	/** The associated GameData object. */
-	private GameData data;
-
-	/** The color of this slider. */
-	private Color color;
-
-	/** The underlying Curve. */
-	private Curve curve;
-
-	/** The time duration of the slider, in milliseconds. */
-	private float sliderTime = 0f;
-
-	/** The time duration of the slider including repeats, in milliseconds. */
-	private float sliderTimeTotal = 0f;
-
-	/** Whether or not the result of the initial hit circle has been processed. */
-	private boolean sliderClickedInitial = false;
-
-	/** Whether or not the slider was held to the end. */
-	private boolean sliderHeldToEnd = false;
-
-	/** Whether or not to show the follow circle. */
-	private boolean followCircleActive = false;
-
-	/** Whether or not the slider result ends the combo streak. */
-	private boolean comboEnd;
-
-	/** The number of repeats that have passed so far. */
-	private int currentRepeats = 0;
-
-	/** The t values of the slider ticks. */
-	private float[] ticksT;
-
-	/** The tick index in the ticksT[] array. */
-	private int tickIndex = 0;
-
-	/** Number of ticks hit and tick intervals so far. */
-	private int ticksHit = 0, tickIntervals = 1;
-
-	/** The animation progress for ticks expanding the follow circle. */
-	private AnimatedValue tickExpand = new AnimatedValue(200, 0.1f, 0f, AnimationEquation.LINEAR);
-
-	/** The animation progress for the initial expansion of the follow circle. */
-	private AnimatedValue initialExpand = new AnimatedValue(150, 0f, 1f, AnimationEquation.OUT_QUAD);
-
-	/** The animation progress for the release of the follow circle. */
-	private AnimatedValue releaseExpand = new AnimatedValue(100, 0f, 1f, AnimationEquation.IN_QUAD);
-
-	/** Start index of this slider in the merged slider. */
-	public int baseSliderFrom;
-
-	/** Container dimensions. */
-	private static int containerWidth, containerHeight;
-
 	/**
-	 * Initializes the Slider data type with images and dimensions.
-	 * @param container the game container
-	 * @param circleDiameter the circle diameter
-	 * @param beatmap the associated beatmap
+	 * The diameter of hit circles.
 	 */
-	public static void init(GameContainer container, float circleDiameter, Beatmap beatmap) {
-		containerWidth = container.getWidth();
-		containerHeight = container.getHeight();
-
-		diameter = circleDiameter * HitObject.getXMultiplier();  // convert from Osupixels (640x480)
-		int diameterInt = (int) diameter;
-
-		followRadius = diameter / 2 * 3f;
-
-		// slider ball
-		if (GameImage.SLIDER_BALL.hasBeatmapSkinImages() ||
-		    (!GameImage.SLIDER_BALL.hasBeatmapSkinImage() && GameImage.SLIDER_BALL.getImages() != null))
-			sliderBallImages = GameImage.SLIDER_BALL.getImages();
-		else
-			sliderBallImages = new Image[]{ GameImage.SLIDER_BALL.getImage() };
-		for (int i = 0; i < sliderBallImages.length; i++)
-			sliderBallImages[i] = sliderBallImages[i].getScaledCopy(diameterInt * 118 / 128, diameterInt * 118 / 128);
-
-		GameImage.SLIDER_FOLLOWCIRCLE.setImage(GameImage.SLIDER_FOLLOWCIRCLE.getImage().getScaledCopy(diameterInt * 259 / 128, diameterInt * 259 / 128));
-		GameImage.REVERSEARROW.setImage(GameImage.REVERSEARROW.getImage().getScaledCopy(diameterInt, diameterInt));
-		GameImage.SLIDER_TICK.setImage(GameImage.SLIDER_TICK.getImage().getScaledCopy(diameterInt / 4, diameterInt / 4));
-
-		sliderMultiplier = beatmap.sliderMultiplier;
-		sliderTickRate = beatmap.sliderTickRate;
-	}
+	private static float diameter;
+	/**
+	 * Container dimensions.
+	 */
+	private static int containerWidth, containerHeight;
+	/**
+	 * Start index of this slider in the merged slider.
+	 */
+	public int baseSliderFrom;
+	/**
+	 * The scaled starting x, y coordinates.
+	 */
+	protected float x, y;
+	/**
+	 * The associated HitObject.
+	 */
+	private final HitObject hitObject;
+	/**
+	 * The associated Game object.
+	 */
+	private final Game game;
+	/**
+	 * The associated GameData object.
+	 */
+	private final GameData data;
+	/**
+	 * The color of this slider.
+	 */
+	private final Color color;
+	/**
+	 * The underlying Curve.
+	 */
+	private Curve curve;
+	/**
+	 * The time duration of the slider, in milliseconds.
+	 */
+	private float sliderTime = 0f;
+	/**
+	 * The time duration of the slider including repeats, in milliseconds.
+	 */
+	private float sliderTimeTotal = 0f;
+	/**
+	 * Whether or not the result of the initial hit circle has been processed.
+	 */
+	private boolean sliderClickedInitial = false;
+	/**
+	 * Whether or not the slider was held to the end.
+	 */
+	private boolean sliderHeldToEnd = false;
+	/**
+	 * Whether or not to show the follow circle.
+	 */
+	private boolean followCircleActive = false;
+	/**
+	 * Whether or not the slider result ends the combo streak.
+	 */
+	private final boolean comboEnd;
+	/**
+	 * The number of repeats that have passed so far.
+	 */
+	private int currentRepeats = 0;
+	/**
+	 * The t values of the slider ticks.
+	 */
+	private float[] ticksT;
+	/**
+	 * The tick index in the ticksT[] array.
+	 */
+	private int tickIndex = 0;
+	/**
+	 * Number of ticks hit and tick intervals so far.
+	 */
+	private int ticksHit = 0, tickIntervals = 1;
+	/**
+	 * The animation progress for ticks expanding the follow circle.
+	 */
+	private final AnimatedValue tickExpand = new AnimatedValue(200, 0.1f, 0f, AnimationEquation.LINEAR);
+	/**
+	 * The animation progress for the initial expansion of the follow circle.
+	 */
+	private final AnimatedValue initialExpand = new AnimatedValue(150, 0f, 1f, AnimationEquation.OUT_QUAD);
+	/**
+	 * The animation progress for the release of the follow circle.
+	 */
+	private final AnimatedValue releaseExpand = new AnimatedValue(100, 0f, 1f, AnimationEquation.IN_QUAD);
 
 	/**
 	 * Constructor.
+	 *
 	 * @param hitObject the associated HitObject
-	 * @param game the associated Game object
-	 * @param data the associated GameData object
-	 * @param color the color of this slider
-	 * @param comboEnd true if this is the last hit object in the combo
+	 * @param game      the associated Game object
+	 * @param data      the associated GameData object
+	 * @param color     the color of this slider
+	 * @param comboEnd  true if this is the last hit object in the combo
 	 */
 	public Slider(HitObject hitObject, Game game, GameData data, Color color, boolean comboEnd) {
 		this.hitObject = hitObject;
@@ -189,6 +189,39 @@ public class Slider implements GameObject {
 		releaseExpand.setTime(releaseExpand.getDuration());
 	}
 
+	/**
+	 * Initializes the Slider data type with images and dimensions.
+	 *
+	 * @param container      the game container
+	 * @param circleDiameter the circle diameter
+	 * @param beatmap        the associated beatmap
+	 */
+	public static void init(GameContainer container, float circleDiameter, Beatmap beatmap) {
+		containerWidth = container.getWidth();
+		containerHeight = container.getHeight();
+
+		diameter = circleDiameter * HitObject.getXMultiplier();  // convert from Osupixels (640x480)
+		int diameterInt = (int) diameter;
+
+		followRadius = diameter / 2 * 3f;
+
+		// slider ball
+		if (GameImage.SLIDER_BALL.hasBeatmapSkinImages() ||
+				(!GameImage.SLIDER_BALL.hasBeatmapSkinImage() && GameImage.SLIDER_BALL.getImages() != null))
+			sliderBallImages = GameImage.SLIDER_BALL.getImages();
+		else
+			sliderBallImages = new Image[]{GameImage.SLIDER_BALL.getImage()};
+		for (int i = 0; i < sliderBallImages.length; i++)
+			sliderBallImages[i] = sliderBallImages[i].getScaledCopy(diameterInt * 118 / 128, diameterInt * 118 / 128);
+
+		GameImage.SLIDER_FOLLOWCIRCLE.setImage(GameImage.SLIDER_FOLLOWCIRCLE.getImage().getScaledCopy(diameterInt * 259 / 128, diameterInt * 259 / 128));
+		GameImage.REVERSEARROW.setImage(GameImage.REVERSEARROW.getImage().getScaledCopy(diameterInt, diameterInt));
+		GameImage.SLIDER_TICK.setImage(GameImage.SLIDER_TICK.getImage().getScaledCopy(diameterInt / 4, diameterInt / 4));
+
+		sliderMultiplier = beatmap.sliderMultiplier;
+		sliderTickRate = beatmap.sliderTickRate;
+	}
+
 	@Override
 	public void draw(Graphics g, int trackPosition) {
 		int timeDiff = hitObject.getTime() - trackPosition;
@@ -212,7 +245,7 @@ public class Slider implements GameObject {
 		if (GameMod.HIDDEN.isActive() && trackPosition > hitObject.getTime()) {
 			// "Hidden" mod: fade out sliders
 			Colors.WHITE_FADE.a = color.a = sliderAlpha =
-				Math.max(0f, 1f - ((float) (trackPosition - hitObject.getTime()) / (getEndTime() - hitObject.getTime())) * 1.05f);
+					Math.max(0f, 1f - ((float) (trackPosition - hitObject.getTime()) / (getEndTime() - hitObject.getTime())) * 1.05f);
 		}
 
 		boolean isCurveCompletelyDrawn;
@@ -279,7 +312,7 @@ public class Slider implements GameObject {
 		// draw combo number and overlay if not initially clicked
 		if (!sliderClickedInitial) {
 			data.drawSymbolNumber(hitObject.getComboNumber(), x, y,
-				hitCircle.getWidth() * 0.40f / data.getDefaultSymbolImage(0).getHeight(), alpha);
+					hitCircle.getWidth() * 0.40f / data.getDefaultSymbolImage(0).getHeight(), alpha);
 
 			if (overlayAboveNumber) {
 				startCircleOverlayColor.a = sliderAlpha;
@@ -294,7 +327,7 @@ public class Slider implements GameObject {
 				// bouncing animation
 				//arrow = arrow.getScaledCopy((float) (1 + 0.2d * ((trackPosition + sliderTime * tcurRepeat) % 292) / 292));
 				Color arrowColor = (Utils.getLuminance(color) < 0.8f || Options.isExperimentalSliderStyle()) ?
-					Color.white : Color.black;
+						Color.white : Color.black;
 				if (tcurRepeat == 0) {
 					arrow.setAlpha(Options.isSliderSnaking() ? decorationsAlpha : 1f);
 				} else {
@@ -373,8 +406,9 @@ public class Slider implements GameObject {
 
 	/**
 	 * Draws slider ticks.
-	 * @param trackPosition the track position
-	 * @param curveAlpha the curve alpha level
+	 *
+	 * @param trackPosition    the track position
+	 * @param curveAlpha       the curve alpha level
 	 * @param decorationsAlpha the decorations alpha level
 	 */
 	private void drawSliderTicks(int trackPosition, float curveAlpha, float decorationsAlpha) {
@@ -424,9 +458,10 @@ public class Slider implements GameObject {
 
 	/**
 	 * Draws the slider track for the experimental style sliders.
-	 * @param trackPosition the current track position
+	 *
+	 * @param trackPosition         the current track position
 	 * @param snakingSliderProgress the progress of the snaking sliders [0,1]
-	 * @param sliderAlpha the slider alpha level
+	 * @param sliderAlpha           the slider alpha level
 	 * @return true if the track was completely drawn
 	 */
 	private boolean drawExperimentalSliderTrack(int trackPosition, double snakingSliderProgress, float sliderAlpha) {
@@ -444,19 +479,19 @@ public class Slider implements GameObject {
 			if (Options.isExperimentalSliderShrinking() && curveIntervalFrom > 0) {
 				if (hitObject.getRepeatCount() % 2 == 0) {
 					game.addMergedSliderPointsToRender(
-						baseSliderFrom,
-						baseSliderFrom + (int) ((1d - curveIntervalFrom) * curveLength)
+							baseSliderFrom,
+							baseSliderFrom + (int) ((1d - curveIntervalFrom) * curveLength)
 					);
 				} else {
 					game.addMergedSliderPointsToRender(
-						baseSliderFrom + (int) (curveIntervalFrom * curveLength) + 1,
-						baseSliderFrom + (int) (curveIntervalTo * curve.getCurvePoints().length)
+							baseSliderFrom + (int) (curveIntervalFrom * curveLength) + 1,
+							baseSliderFrom + (int) (curveIntervalTo * curve.getCurvePoints().length)
 					);
 				}
 			} else {
 				game.addMergedSliderPointsToRender(
-					baseSliderFrom,
-					baseSliderFrom + (int) (curveIntervalTo * curve.getCurvePoints().length)
+						baseSliderFrom,
+						baseSliderFrom + (int) (curveIntervalTo * curve.getCurvePoints().length)
 				);
 			}
 		}
@@ -478,8 +513,9 @@ public class Slider implements GameObject {
 
 	/**
 	 * Get the alpha level used to fade in circles & reversearrows after repeat
+	 *
 	 * @param trackPosition current trackposition, in ms
-	 * @param endCircle request alpha for end circle (true) or start circle (false)?
+	 * @param endCircle     request alpha for end circle (true) or start circle (false)?
 	 * @return alpha level as float in interval [0, 1]
 	 */
 	private float getCircleAlphaAfterRepeat(int trackPosition, boolean endCircle) {
@@ -496,6 +532,7 @@ public class Slider implements GameObject {
 
 	/**
 	 * Calculates the slider hit result.
+	 *
 	 * @return the hit result (GameData.HIT_* constants)
 	 */
 	private int hitResult() {
@@ -601,7 +638,7 @@ public class Slider implements GameObject {
 			//else not a hit
 
 			if (result > -1) {
-				data.addHitError(hitObject.getTime(), x,y,trackPosition - hitObject.getTime());
+				data.addHitError(hitObject.getTime(), x, y, trackPosition - hitObject.getTime());
 				sliderClickedInitial = true;
 				data.sendSliderTickResult(hitObject.getTime(), result, this.x, this.y, hitObject, currentRepeats);
 				return true;
@@ -673,8 +710,8 @@ public class Slider implements GameObject {
 		// ticks
 		int newTicks = 0;
 		while (ticksT != null &&
-		       tickIntervals < (ticksT.length * (currentRepeats + 1)) + 1 &&
-		       tickIntervals < (ticksT.length * repeatCount) + repeatCount) {
+				tickIntervals < (ticksT.length * (currentRepeats + 1)) + 1 &&
+				tickIntervals < (ticksT.length * repeatCount) + repeatCount) {
 			float t = getT(trackPosition, true);
 			if (t - Math.floor(t) >= ticksT[tickIndex] || tickIntervals < (ticksT.length * currentRepeats) + 1) {
 				tickIntervals++;
@@ -718,7 +755,7 @@ public class Slider implements GameObject {
 					posY = this.y;
 				}
 				data.sendSliderTickResult(trackPosition, GameData.HIT_SLIDER30,
-					posX, posY, hitObject, currentRepeats);
+						posX, posY, hitObject, currentRepeats);
 
 				// fade out reverse arrow
 				float colorLuminance = Utils.getLuminance(color);
@@ -736,7 +773,7 @@ public class Slider implements GameObject {
 				tickIdx = (tickIdx + (ticksT.length - 1)) % ticksT.length;
 				Vec2f tickPos = curve.pointAt(ticksT[tickIdx]);
 				data.sendSliderTickResult(trackPosition, GameData.HIT_SLIDER10,
-					tickPos.x, tickPos.y, hitObject, currentRepeats);
+						tickPos.x, tickPos.y, hitObject, currentRepeats);
 			}
 
 			// held near end of slider
@@ -805,12 +842,15 @@ public class Slider implements GameObject {
 	}
 
 	@Override
-	public int getEndTime() { return hitObject.getTime() + (int) sliderTimeTotal; }
+	public int getEndTime() {
+		return hitObject.getTime() + (int) sliderTimeTotal;
+	}
 
 	/**
 	 * Returns the t value based on the given track position.
+	 *
 	 * @param trackPosition the current track position
-	 * @param raw if false, ensures that the value lies within [0, 1] by looping repeats
+	 * @param raw           if false, ensures that the value lies within [0, 1] by looping repeats
 	 * @return the t value: raw [0, repeats] or looped [0, 1]
 	 */
 	private float getT(int trackPosition, boolean raw) {
@@ -826,7 +866,9 @@ public class Slider implements GameObject {
 	/**
 	 * Returns the underlying curve.
 	 */
-	public Curve getCurve() { return curve; }
+	public Curve getCurve() {
+		return curve;
+	}
 
 	@Override
 	public void reset() {

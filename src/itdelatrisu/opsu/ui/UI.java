@@ -49,7 +49,7 @@ public class UI {
 	private static final int IDLE_FPS = 30;
 
 	/** Cursor. */
-	private static Cursor cursor = new Cursor();
+	private static final Cursor cursor = new Cursor();
 
 	/** Back button. */
 	private static BackButton backButton;
@@ -67,7 +67,7 @@ public class UI {
 	private static boolean tooltipNewlines;
 
 	/** The alpha level of the current tooltip (if any). */
-	private static AnimatedValue tooltipAlpha = new AnimatedValue(200, 0f, 1f, AnimationEquation.LINEAR);
+	private static final AnimatedValue tooltipAlpha = new AnimatedValue(200, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** The displayed FPS. */
 	private static float fpsDisplay = 0f;
@@ -444,7 +444,7 @@ public class UI {
 	 */
 	private static void updateFPS(int delta){
 		// change frame rate when focus is lost/restored
-		boolean focus = (game.getCurrentStateID() == Opsu.STATE_GAME) ? true : container.hasFocus();
+		boolean focus = game.getCurrentStateID() == Opsu.STATE_GAME || container.hasFocus();
 		container.setTargetFrameRate(focus ? Options.getTargetFPS() : IDLE_FPS);
 
 		// update displayed FPS

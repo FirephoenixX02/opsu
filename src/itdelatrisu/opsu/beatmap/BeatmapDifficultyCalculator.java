@@ -67,10 +67,10 @@ public class BeatmapDifficultyCalculator {
 	private double starRating = -1;
 
 	/** The computed difficulties, indexed by the {@code DIFFICULTY_*} constants. */
-	private double[] difficulties = { -1, -1 };
+	private final double[] difficulties = { -1, -1 };
 
 	/** The computed stars, indexed by the {@code DIFFICULTY_*} constants. */
-	private double[] stars = { -1, -1 };
+	private final double[] stars = { -1, -1 };
 
 	/**
 	 * Constructor. Call {@link #calculate()} to run all computations.
@@ -109,7 +109,7 @@ public class BeatmapDifficultyCalculator {
 	public void calculate() {
 		if (beatmap.objects == null || beatmap.timingPoints == null) {
 			Log.error(String.format("Trying to calculate difficulty values for beatmap '%s' with %s not yet loaded.",
-					beatmap.toString(), (beatmap.objects == null) ? "hit objects" : "timing points"));
+					beatmap, (beatmap.objects == null) ? "hit objects" : "timing points"));
 			return;
 		}
 
@@ -309,10 +309,11 @@ class tpHitObject {
 	public final HitObject baseHitObject;
 
 	/** The strain values, indexed by the {@code DIFFICULTY_*} constants. */
-	private double[] strains = { 1, 1 };
+	private final double[] strains = { 1, 1 };
 
 	/** The normalized start and end positions. */
-	private Vec2f normalizedStartPosition, normalizedEndPosition;
+	private final Vec2f normalizedStartPosition;
+	private Vec2f normalizedEndPosition;
 
 	/** The slider lengths. */
 	private float lazySliderLengthFirst = 0, lazySliderLengthSubsequent = 0;

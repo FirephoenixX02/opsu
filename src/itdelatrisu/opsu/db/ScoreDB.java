@@ -475,8 +475,7 @@ public class ScoreDB {
 			insertUserStmt.executeUpdate();
 		} catch (SQLException e) {
 			ErrorHandler.error("Failed to update user in database.", e, true);
-			return;
-		}
+        }
 	}
 
 	/**

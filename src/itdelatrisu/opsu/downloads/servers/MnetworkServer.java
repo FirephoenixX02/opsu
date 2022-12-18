@@ -52,7 +52,7 @@ public class MnetworkServer extends DownloadServer {
 	private int totalResults = -1;
 
 	/** Beatmap pattern. */
-	private Pattern BEATMAP_PATTERN = Pattern.compile("^(\\d+) ([^-]+) - (.+)\\.osz$");
+	private final Pattern BEATMAP_PATTERN = Pattern.compile("^(\\d+) ([^-]+) - (.+)\\.osz$");
 
 	/** Constructor. */
 	public MnetworkServer() {}

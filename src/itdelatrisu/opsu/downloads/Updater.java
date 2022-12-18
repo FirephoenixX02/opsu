@@ -47,7 +47,7 @@ import org.newdawn.slick.util.ResourceLoader;
  */
 public class Updater {
 	/** The single instance of this class. */
-	private static Updater updater = new Updater();
+	private static final Updater updater = new Updater();
 
 	/** The exit confirmation message. */
 	public static final String EXIT_CONFIRMATION = String.format(
@@ -97,9 +97,9 @@ public class Updater {
 		 * Returns the status description.
 		 */
 		public String getDescription() { return description; }
-	};
+	}
 
-	/** The current updater status. */
+    /** The current updater status. */
 	private Status status;
 
 	/** The current and latest versions. */

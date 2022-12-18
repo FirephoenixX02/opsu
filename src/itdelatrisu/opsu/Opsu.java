@@ -248,11 +248,8 @@ public class Opsu extends StateBasedGame {
 		if (DownloadList.get().hasActiveDownloads() &&
 			UI.showExitConfirmation(DownloadList.EXIT_CONFIRMATION))
 			return false;
-		if (Updater.get().getStatus() == Updater.Status.UPDATE_DOWNLOADING &&
-			UI.showExitConfirmation(Updater.EXIT_CONFIRMATION))
-			return false;
-
-		return true;
+		return Updater.get().getStatus() != Updater.Status.UPDATE_DOWNLOADING ||
+				!UI.showExitConfirmation(Updater.EXIT_CONFIRMATION);
 	}
 
 	/**

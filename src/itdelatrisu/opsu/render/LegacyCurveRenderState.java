@@ -389,7 +389,7 @@ public class LegacyCurveRenderState {
 		float radius = scale / 2;
 
 		for (int i = 0; i < NewCurveStyleState.unitCone.length / 6; ++i) {
-			buff.put(NewCurveStyleState.unitCone[i * 6 + 0]);
+			buff.put(NewCurveStyleState.unitCone[i * 6]);
 			buff.put(NewCurveStyleState.unitCone[i * 6 + 1]);
 			buff.put(offx + (x1 + radius * NewCurveStyleState.unitCone[i * 6 + 2]) / divx);
 			buff.put(offy - (y1 + radius * NewCurveStyleState.unitCone[i * 6 + 3]) / divy);

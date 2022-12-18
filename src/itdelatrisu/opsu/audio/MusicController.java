@@ -280,10 +280,7 @@ public class MusicController {
 			if (!timingPoint.isInherited() && timingPoint.getBeatLength() > 0)
 				lastTimingPoint = timingPoint;
 		}
-		if (lastTimingPoint == null)
-			return false;  // no timing info
-
-		return true;
+		return lastTimingPoint != null;  // no timing info
 	}
 
 	/**
@@ -402,7 +399,7 @@ public class MusicController {
 				try {
 					AudioFileFormat fileFormat = AudioSystem.getAudioFileFormat(lastBeatmap.audioFilename);
 					if (fileFormat instanceof TAudioFileFormat) {
-						Map<?, ?> properties = ((TAudioFileFormat) fileFormat).properties();
+						Map<?, ?> properties = fileFormat.properties();
 						Long microseconds = (Long) properties.get("duration");
 						duration = (int) (microseconds / 1000);
 						return duration;

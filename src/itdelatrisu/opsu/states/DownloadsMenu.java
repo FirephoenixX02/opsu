@@ -103,7 +103,7 @@ public class DownloadsMenu extends BasicGameState {
 	private int focusTimer = 0;
 
 	/** Current start result button (topmost entry). */
-	private KineticScrolling startResultPos = new KineticScrolling();
+	private final KineticScrolling startResultPos = new KineticScrolling();
 
 	/** Total number of results for current query. */
 	private int totalResults = 0;
@@ -115,7 +115,7 @@ public class DownloadsMenu extends BasicGameState {
 	private int pageResultTotal = 0;
 
 	/** Page navigation. */
-	private enum Page { RESET, CURRENT, PREVIOUS, NEXT };
+	private enum Page { RESET, CURRENT, PREVIOUS, NEXT }
 
 	/** Page direction for next query. */
 	private Page pageDir = Page.RESET;
@@ -124,7 +124,7 @@ public class DownloadsMenu extends BasicGameState {
 	private boolean rankedOnly = true;
 
 	/** Current start download index. */
-	private KineticScrolling startDownloadIndexPos = new KineticScrolling();
+	private final KineticScrolling startDownloadIndexPos = new KineticScrolling();
 
 	/** Query thread. */
 	private Thread queryThread;
@@ -278,7 +278,7 @@ public class DownloadsMenu extends BasicGameState {
 			} finally {
 				finished = true;
 			}
-		};
+		}
 
 		/** Imports all packed beatmaps. */
 		private void importBeatmaps() {
@@ -593,7 +593,7 @@ public class DownloadsMenu extends BasicGameState {
 
 			String query = search.getText().trim().toLowerCase();
 			DownloadServer server = serverMenu.getSelectedItem();
-			if ((lastQuery == null || !query.equals(lastQuery)) &&
+			if ((!query.equals(lastQuery)) &&
 			    (query.length() == 0 || query.length() >= server.minQueryLength())) {
 				lastQuery = query;
 				lastQueryDir = pageDir;

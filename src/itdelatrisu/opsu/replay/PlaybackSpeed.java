@@ -44,7 +44,7 @@ public enum PlaybackSpeed {
 	private MenuButton button;
 
 	/** Enum values. */
-	private static PlaybackSpeed[] values = PlaybackSpeed.values();
+	private static final PlaybackSpeed[] values = PlaybackSpeed.values();
 
 	/**
 	 * Initializes the playback buttons.

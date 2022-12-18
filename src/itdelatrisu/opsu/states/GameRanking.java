@@ -67,7 +67,7 @@ public class GameRanking extends BasicGameState {
 	private float retryY, replayY;
 
 	/** Animation progress. */
-	private AnimatedValue animationProgress = new AnimatedValue(6000, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue animationProgress = new AnimatedValue(6000, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** The loaded replay, or null if it couldn't be loaded. */
 	private Replay replay = null;
@@ -170,10 +170,8 @@ public class GameRanking extends BasicGameState {
 		if (UI.globalKeyPressed(key))
 			return;
 
-		switch (key) {
-		case Input.KEY_ESCAPE:
+		if (key == Input.KEY_ESCAPE) {
 			returnToSongMenu();
-			break;
 		}
 	}
 

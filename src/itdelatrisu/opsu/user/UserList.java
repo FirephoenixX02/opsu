@@ -47,7 +47,7 @@ public class UserList {
 	private static UserList list;
 
 	/** Map of all users. */
-	private Map<String, User> users = new HashMap<String, User>();
+	private final Map<String, User> users = new HashMap<String, User>();
 
 	/** The current user. */
 	private User currentUser;

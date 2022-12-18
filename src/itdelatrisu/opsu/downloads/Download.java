@@ -82,10 +82,10 @@ public class Download {
 	/** Download listener interface. */
 	public interface DownloadListener {
 		/** Indication that a download has completed. */
-		public void completed();
+		void completed();
 
 		/** Indication that an error has occurred. */
-		public void error();
+		void error();
 	}
 
 	/** The local path. */
@@ -276,7 +276,7 @@ public class Download {
 				try (
 					InputStream in = conn.getInputStream();
 					ReadableByteChannel readableByteChannel = Channels.newChannel(in);
-					FileOutputStream fileOutputStream = new FileOutputStream(localPath);
+					FileOutputStream fileOutputStream = new FileOutputStream(localPath)
 				) {
 					rbc = new ReadableByteChannelWrapper(readableByteChannel);
 					fos = fileOutputStream;

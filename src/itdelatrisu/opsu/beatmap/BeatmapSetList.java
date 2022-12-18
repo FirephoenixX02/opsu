@@ -49,7 +49,7 @@ public class BeatmapSetList {
 	);
 
 	/** List containing all parsed nodes. */
-	private ArrayList<BeatmapSetNode> parsedNodes;
+	private final ArrayList<BeatmapSetNode> parsedNodes;
 
 	/** Total number of beatmaps (i.e. Beatmap objects). */
 	private int mapCount = 0;
@@ -61,10 +61,10 @@ public class BeatmapSetList {
 	private ArrayList<BeatmapSetNode> nodes;
 
 	/** Set of all beatmap set IDs for the parsed beatmaps. */
-	private HashSet<Integer> MSIDdb;
+	private final HashSet<Integer> MSIDdb;
 
 	/** Map of all MD5 hashes to beatmaps. */
-	private HashMap<String, Beatmap> beatmapHashDB;
+	private final HashMap<String, Beatmap> beatmapHashDB;
 
 	/** Index of current expanded node (-1 if no node is expanded). */
 	private int expandedIndex;
@@ -400,7 +400,6 @@ public class BeatmapSetList {
 
 		expandedIndex = -1;
 		expandedStartNode = expandedEndNode = null;
-		return;
 	}
 
 	/**
@@ -441,7 +440,7 @@ public class BeatmapSetList {
 
 		// don't redo the same search
 		query = query.trim().toLowerCase();
-		if (lastQuery != null && query.equals(lastQuery))
+		if (query.equals(lastQuery))
 			return false;
 		lastQuery = query;
 		LinkedList<String> terms = new LinkedList<String>(Arrays.asList(query.split("\\s+")));

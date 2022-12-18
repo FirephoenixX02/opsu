@@ -27,10 +27,10 @@ package itdelatrisu.opsu.objects.curves;
  */
 public class CentripetalCatmullRom extends CurveType {
 	/** The time values of the Catmull curve. */
-	private float [] time;
+	private final float [] time;
 
 	/** The control points of the Catmull curve. */
-	private Vec2f[] points;
+	private final Vec2f[] points;
 
 	/**
 	 * Constructor.

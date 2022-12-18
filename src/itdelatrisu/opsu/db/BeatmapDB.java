@@ -692,7 +692,7 @@ public class BeatmapDB {
 			setStarsStmt.executeUpdate();
 		} catch (SQLException e) {
 			ErrorHandler.error(String.format("Failed to save star rating '%.4f' for beatmap '%s' in database.",
-					beatmap.starRating, beatmap.toString()), e, true);
+					beatmap.starRating, beatmap), e, true);
 		}
 	}
 
@@ -712,7 +712,7 @@ public class BeatmapDB {
 			updatePlayStatsStmt.executeUpdate();
 		} catch (SQLException e) {
 			ErrorHandler.error(String.format("Failed to update play statistics for beatmap '%s' in database.",
-					beatmap.toString()), e, true);
+					beatmap), e, true);
 		}
 	}
 
@@ -731,7 +731,7 @@ public class BeatmapDB {
 			setFavoriteStmt.executeUpdate();
 		} catch (SQLException e) {
 			ErrorHandler.error(String.format("Failed to update favorite status for beatmap '%s' in database.",
-					beatmap.toString()), e, true);
+					beatmap), e, true);
 		}
 	}
 
@@ -750,7 +750,7 @@ public class BeatmapDB {
 			setLocalOffsetStmt.executeUpdate();
 		} catch (SQLException e) {
 			ErrorHandler.error(String.format("Failed to update local music offset for beatmap '%s' in database.",
-					beatmap.toString()), e, true);
+					beatmap), e, true);
 		}
 	}
 

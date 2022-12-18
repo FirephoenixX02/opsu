@@ -28,7 +28,7 @@ import org.newdawn.slick.Graphics;
  */
 public class DummyObject implements GameObject {
 	/** The associated HitObject. */
-	private HitObject hitObject;
+	private final HitObject hitObject;
 
 	/** The scaled starting x, y coordinates. */
 	private float x, y;

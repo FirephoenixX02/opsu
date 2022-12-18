@@ -118,10 +118,10 @@ public class SongMenu extends BasicGameState {
 	/** Song node class representing an BeatmapSetNode and file index. */
 	private static class SongNode {
 		/** Song node. */
-		private BeatmapSetNode node;
+		private final BeatmapSetNode node;
 
 		/** File index. */
-		private int index;
+		private final int index;
 
 		/**
 		 * Constructor.
@@ -148,7 +148,7 @@ public class SongMenu extends BasicGameState {
 	private BeatmapSetNode startNode;
 
 	/** The first node is about this high above the header. */
-	private KineticScrolling songScrolling = new KineticScrolling();
+	private final KineticScrolling songScrolling = new KineticScrolling();
 
 	/** The number of Nodes to offset from the top to the startNode. */
 	private int startNodeOffset;
@@ -169,7 +169,7 @@ public class SongMenu extends BasicGameState {
 	private float buttonX, buttonY, buttonOffset, buttonWidth, buttonHeight;
 
 	/** Horizontal offset of song buttons for mouse hover, in pixels. */
-	private AnimatedValue hoverOffset = new AnimatedValue(250, 0, MAX_HOVER_OFFSET, AnimationEquation.OUT_QUART);
+	private final AnimatedValue hoverOffset = new AnimatedValue(250, 0, MAX_HOVER_OFFSET, AnimationEquation.OUT_QUART);
 
 	/** Current index of hovered song button. */
 	private BeatmapSetNode hoverIndex = null;
@@ -242,7 +242,7 @@ public class SongMenu extends BasicGameState {
 			} finally {
 				finished = true;
 			}
-		};
+		}
 
 		/** Reloads all beatmaps. */
 		private void reloadBeatmaps() {
@@ -268,7 +268,7 @@ public class SongMenu extends BasicGameState {
 	private ScoreData[] focusScores;
 
 	/** Current start score (topmost score entry). */
-	private KineticScrolling startScorePos = new KineticScrolling();
+	private final KineticScrolling startScorePos = new KineticScrolling();
 
 	/** Header and footer end and start y coordinates, respectively. */
 	private float headerY, footerY;
@@ -295,16 +295,16 @@ public class SongMenu extends BasicGameState {
 	private Beatmap lastFadeBeatmap;
 
 	/** Background alpha levels (for crossfade effect). */
-	private AnimatedValue
-		bgAlpha = new AnimatedValue(600, 0f, 1f, AnimationEquation.OUT_QUAD),
-		playfieldAlpha = new AnimatedValue(600, 0f, 1f, AnimationEquation.IN_QUAD),
-		lastBgAlpha = new AnimatedValue(600, 1f, 0f, AnimationEquation.IN_QUAD);
+	private final AnimatedValue
+		bgAlpha = new AnimatedValue(600, 0f, 1f, AnimationEquation.OUT_QUAD);
+	private final AnimatedValue playfieldAlpha = new AnimatedValue(600, 0f, 1f, AnimationEquation.IN_QUAD);
+	private final AnimatedValue lastBgAlpha = new AnimatedValue(600, 1f, 0f, AnimationEquation.IN_QUAD);
 
 	/** Timer for animations when a new song node is selected. */
-	private AnimatedValue songChangeTimer = new AnimatedValue(900, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue songChangeTimer = new AnimatedValue(900, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** Timer for the music icon animation when a new song node is selected. */
-	private AnimatedValue musicIconBounceTimer = new AnimatedValue(350, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue musicIconBounceTimer = new AnimatedValue(350, 0f, 1f, AnimationEquation.LINEAR);
 
 	/**
 	 * Beatmaps whose difficulties were recently computed (if flag is non-null).
@@ -313,7 +313,7 @@ public class SongMenu extends BasicGameState {
 	 * beatmap's array fields (timing points, etc.).
 	 */
 	@SuppressWarnings("serial")
-	private LRUCache<Beatmap, Boolean> beatmapsCalculated = new LRUCache<Beatmap, Boolean>(12) {
+	private final LRUCache<Beatmap, Boolean> beatmapsCalculated = new LRUCache<Beatmap, Boolean>(12) {
 		@Override
 		public void eldestRemoved(Map.Entry<Beatmap, Boolean> eldest) {
 			Boolean b = eldest.getValue();
@@ -348,7 +348,7 @@ public class SongMenu extends BasicGameState {
 	private boolean showOptionsOverlay = false;
 
 	/** The options overlay show/hide animation progress. */
-	private AnimatedValue optionsOverlayProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue optionsOverlayProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** The user button. */
 	private UserButton userButton;
@@ -360,7 +360,7 @@ public class SongMenu extends BasicGameState {
 	private boolean showUserOverlay = false;
 
 	/** The user overlay show/hide animation progress. */
-	private AnimatedValue userOverlayProgress = new AnimatedValue(750, 0f, 1f, AnimationEquation.OUT_CUBIC);
+	private final AnimatedValue userOverlayProgress = new AnimatedValue(750, 0f, 1f, AnimationEquation.OUT_CUBIC);
 
 	// game-related variables
 	private GameContainer container;

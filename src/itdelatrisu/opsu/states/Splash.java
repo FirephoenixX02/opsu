@@ -72,10 +72,10 @@ public class Splash extends BasicGameState {
 	private boolean watchServiceChange = false;
 
 	/** Logo alpha level. */
-	private AnimatedValue logoAlpha = new AnimatedValue(MIN_SPLASH_TIME, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue logoAlpha = new AnimatedValue(MIN_SPLASH_TIME, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** Loading progress alpha level. */
-	private AnimatedValue progressAlpha = new AnimatedValue(MIN_SPLASH_TIME, 0f, 1f, AnimationEquation.OUT_CUBIC);
+	private final AnimatedValue progressAlpha = new AnimatedValue(MIN_SPLASH_TIME, 0f, 1f, AnimationEquation.OUT_CUBIC);
 
 	/** Elapsed time. */
 	private int elapsedTime = 0;

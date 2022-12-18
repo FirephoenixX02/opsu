@@ -67,7 +67,7 @@ public class OsuMirrorServer extends DownloadServer {
 	private int maxServerID = 0;
 
 	/** Lookup table from beatmap set ID -> server download ID. */
-	private HashMap<Integer, Integer> idTable = new HashMap<Integer, Integer>();
+	private final HashMap<Integer, Integer> idTable = new HashMap<Integer, Integer>();
 
 	/** Constructor. */
 	public OsuMirrorServer() {}

@@ -58,7 +58,7 @@ public class UserSelectOverlay extends AbstractComponent {
 	private boolean active;
 
 	/** Users. */
-	private List<UserButton> userButtons = new ArrayList<UserButton>();
+	private final List<UserButton> userButtons = new ArrayList<UserButton>();
 
 	/** The event listener. */
 	private final UserSelectOverlayListener listener;
@@ -67,7 +67,8 @@ public class UserSelectOverlay extends AbstractComponent {
 	private float x, y;
 
 	/** Dimensions. */
-	private int width, height;
+	private final int width;
+	private final int height;
 
 	/** The relative offsets of the title. */
 	private final int titleY;
@@ -100,22 +101,22 @@ public class UserSelectOverlay extends AbstractComponent {
 	private float globalAlpha = 1f;
 
 	/** Textfield used for entering new user names. */
-	private TextField textField;
+	private final TextField textField;
 
 	/** New user. */
-	private User newUser;
+	private final User newUser;
 
 	/** New user button. */
-	private UserButton newUserButton;
+	private final UserButton newUserButton;
 
 	/** User icons. */
-	private MenuButton[] userIcons;
+	private final MenuButton[] userIcons;
 
 	/** Edit user button. */
-	private UserButton editUserButton;
+	private final UserButton editUserButton;
 
 	/** Delete user button. */
-	private UserButton deleteUserButton;
+	private final UserButton deleteUserButton;
 
 	/** States. */
 	private enum State { USER_SELECT, CREATE_USER, EDIT_USER }
@@ -127,7 +128,7 @@ public class UserSelectOverlay extends AbstractComponent {
 	private State prevState;
 
 	/** State change progress. */
-	private AnimatedValue stateChangeProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue stateChangeProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** Colors. */
 	private static final Color
@@ -137,8 +138,9 @@ public class UserSelectOverlay extends AbstractComponent {
 		COLOR_RED = new Color(Color.red);
 
 	// game-related variables
-	private Input input;
-	private int containerWidth, containerHeight;
+	private final Input input;
+	private final int containerWidth;
+	private final int containerHeight;
 
 	/**
 	 * Creates the user selection overlay.

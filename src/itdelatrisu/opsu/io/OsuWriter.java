@@ -36,7 +36,7 @@ import java.util.TimeZone;
  */
 public class OsuWriter {
 	/** Output stream writer. */
-	private DataOutputStream writer;
+	private final DataOutputStream writer;
 
 	/**
 	 * Constructor.

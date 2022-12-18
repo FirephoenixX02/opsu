@@ -25,7 +25,7 @@ package itdelatrisu.opsu.objects.curves;
  */
 public class Bezier2 extends CurveType {
 	/** The control points of the Bezier curve. */
-	private Vec2f[] points;
+	private final Vec2f[] points;
 
 	/**
 	 * Constructor.

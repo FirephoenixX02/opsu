@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -69,9 +70,9 @@ public class SkinLoader {
 		if (!skinFile.isFile())  // missing skin.ini
 			return skin;
 
-		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(skinFile), "UTF-8"))) {
+		try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(skinFile), StandardCharsets.UTF_8))) {
 			String line = in.readLine();
-			String tokens[] = null;
+			String[] tokens = null;
 			while (line != null) {
 				line = line.trim();
 				if (!isValidLine(line)) {

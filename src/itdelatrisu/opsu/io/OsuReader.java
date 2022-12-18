@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 
 /**
@@ -35,7 +36,7 @@ import java.util.Date;
  */
 public class OsuReader {
 	/** Input stream reader. */
-	private DataInputStream reader;
+	private final DataInputStream reader;
 
 	/**
 	 * Constructor.
@@ -161,7 +162,7 @@ public class OsuReader {
 			return "";
 		byte[] utf8bytes = new byte[length];
 		this.reader.readFully(utf8bytes);
-		return new String(utf8bytes, "UTF-8");
+		return new String(utf8bytes, StandardCharsets.UTF_8);
 	}
 
 	/**

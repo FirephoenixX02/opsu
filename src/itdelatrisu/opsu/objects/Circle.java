@@ -41,22 +41,22 @@ public class Circle implements GameObject {
 	private static float diameter;
 
 	/** The associated HitObject. */
-	private HitObject hitObject;
+	private final HitObject hitObject;
 
 	/** The scaled starting x, y coordinates. */
 	private float x, y;
 
 	/** The associated Game object. */
-	private Game game;
+	private final Game game;
 
 	/** The associated GameData object. */
-	private GameData data;
+	private final GameData data;
 
 	/** The color of this circle. */
-	private Color color;
+	private final Color color;
 
 	/** Whether or not the circle result ends the combo streak. */
-	private boolean comboEnd;
+	private final boolean comboEnd;
 
 	/**
 	 * Initializes the Circle data type with map modifiers, images, and dimensions.

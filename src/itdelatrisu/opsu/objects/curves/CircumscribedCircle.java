@@ -34,19 +34,24 @@ public class CircumscribedCircle extends Curve {
 		HALF_PI = (float) (Math.PI / 2);
 
 	/** The center of the Circumscribed Circle. */
-	private Vec2f circleCenter;
+	private final Vec2f circleCenter;
 
 	/** The radius of the Circumscribed Circle. */
-	private float radius;
+	private final float radius;
 
 	/** The three points to create the Circumscribed Circle from. */
-	private Vec2f start, mid, end;
+	private final Vec2f start;
+	private final Vec2f mid;
+	private final Vec2f end;
 
 	/** The three angles relative to the circle center. */
-	private float startAng, endAng, midAng;
+	private float startAng;
+	private float endAng;
+	private final float midAng;
 
 	/** The start and end angles for drawing. */
-	private float drawStartAngle, drawEndAngle;
+	private final float drawStartAngle;
+	private final float drawEndAngle;
 
 	/**
 	 * Constructor.

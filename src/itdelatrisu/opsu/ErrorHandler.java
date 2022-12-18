@@ -202,7 +202,7 @@ public class ErrorHandler {
 				String hash = Utils.getGitHash();
 				if (hash != null) {
 					sb.append(" (");
-					sb.append(hash.substring(0, 12));
+					sb.append(hash, 0, 12);
 					sb.append(')');
 				}
 				sb.append('\n');

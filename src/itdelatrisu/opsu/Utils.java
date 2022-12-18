@@ -452,7 +452,7 @@ public class Utils {
 		FileUtils fileUtils = FileUtils.getInstance();
 		if (fileUtils.hasTrash()) {
 			try {
-				fileUtils.moveToTrash(new File[] { file });
+				fileUtils.moveToTrash(file);
 				return true;
 			} catch (IOException e) {
 				Log.warn(String.format("Failed to move file '%s' to trash.", file.getAbsolutePath()), e);
@@ -478,7 +478,7 @@ public class Utils {
 
 		// recursively delete contents of directory
 		File[] files = dir.listFiles();
-		if (files != null && files.length > 0) {
+		if (files != null) {
 			for (File file : files) {
 				if (file.isDirectory())
 					deleteDirectory(file);

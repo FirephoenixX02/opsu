@@ -43,7 +43,7 @@ public class Fonts {
 	public static UnicodeFont DEFAULT, BOLD, XLARGE, LARGE, MEDIUM, MEDIUMBOLD, SMALL, SMALLBOLD;
 
 	/** Set of all Unicode strings already loaded per font. */
-	private static HashMap<UnicodeFont, HashSet<String>> loadedGlyphs = new HashMap<UnicodeFont, HashSet<String>>();
+	private static final HashMap<UnicodeFont, HashSet<String>> loadedGlyphs = new HashMap<UnicodeFont, HashSet<String>>();
 
 	// This class should not be instantiated.
 	private Fonts() {}

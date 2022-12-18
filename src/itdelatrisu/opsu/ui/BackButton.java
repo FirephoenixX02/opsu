@@ -35,7 +35,7 @@ import org.newdawn.slick.Image;
  */
 public class BackButton {
 	/** Skinned back button. */
-	private MenuButton backButton;
+	private final MenuButton backButton;
 
 	/** Colors. */
 	private static final Color

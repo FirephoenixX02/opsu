@@ -162,7 +162,7 @@ public class GameData {
 		HIT_MU               = 14;  // Mu
 
 	/** Random number generator (for score animation). **/
-	private static Random random = new Random();
+	private static final Random random = new Random();
 
 	/** Hit result-related images (indexed by HIT_* constants to HIT_MAX). */
 	private Image[] hitResults;
@@ -316,7 +316,7 @@ public class GameData {
 	private float scorePercentDisplay;
 
 	/** Health. */
-	private Health health = new Health();
+	private final Health health = new Health();
 
 	/** The difficulty multiplier used in the score formula. */
 	private int difficultyMultiplier = 2;
@@ -340,7 +340,8 @@ public class GameData {
 	private boolean isGameplay;
 
 	/** Container dimensions. */
-	private int width, height;
+	private final int width;
+	private final int height;
 
 	/**
 	 * Constructor for gameplay.

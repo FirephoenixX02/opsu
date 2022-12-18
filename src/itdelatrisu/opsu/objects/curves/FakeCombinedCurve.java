@@ -33,7 +33,7 @@ import org.newdawn.slick.Color;
  */
 public class FakeCombinedCurve extends Curve {
 	/** The current points to render (pairs of indices: from, to). */
-	private List<Integer> pointsToRender = new ArrayList<Integer>();
+	private final List<Integer> pointsToRender = new ArrayList<Integer>();
 
 	/**
 	 * Constructor.

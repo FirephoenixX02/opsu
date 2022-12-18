@@ -77,7 +77,7 @@ public class Skin {
 	private static final Color DEFAULT_INPUT_OVERLAY_TEXT = new Color(0, 0, 0);
 
 	/** The skin directory. */
-	private File dir;
+	private final File dir;
 
 	/**
 	 * [General]

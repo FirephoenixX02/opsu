@@ -47,7 +47,7 @@ public class NotificationManager {
 	/** Listener for notification clicks. */
 	public interface NotificationListener {
 		/** Fired when this notification is clicked. */
-		public void click();
+		void click();
 	}
 
 	/** Notification. */
@@ -208,7 +208,7 @@ public class NotificationManager {
 	}
 
 	/** All bubble notifications. */
-	private List<BubbleNotification> notifications;
+	private final List<BubbleNotification> notifications;
 
 	/** The current bar notification string. */
 	private String barNotif;

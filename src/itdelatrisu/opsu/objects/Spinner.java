@@ -47,7 +47,7 @@ public class Spinner implements GameObject {
 	private static float overallDifficulty = 5f;
 
 	/** The number of rotation velocities to store. */
-	private int maxStoredDeltaAngles;
+	private final int maxStoredDeltaAngles;
 
 	/** The amount of time, in milliseconds, before another velocity is stored. */
 	private static final float DELTA_UPDATE_TIME = 1000 / 60f;
@@ -66,13 +66,13 @@ public class Spinner implements GameObject {
 		HALF_PI = (float) (Math.PI / 2);
 
 	/** The associated HitObject. */
-	private HitObject hitObject;
+	private final HitObject hitObject;
 
 	/** The associated Game object. */
-	private Game game;
+	private final Game game;
 
 	/** The associated GameData object. */
-	private GameData data;
+	private final GameData data;
 
 	/** The last rotation angle. */
 	private float lastAngle = 0f;
@@ -84,7 +84,7 @@ public class Spinner implements GameObject {
 	private float drawRotation = 0f;
 
 	/** The total number of rotations needed to clear the spinner. */
-	private float rotationsNeeded;
+	private final float rotationsNeeded;
 
 	/** The remaining amount of time that was not used. */
 	private float deltaOverflow;
@@ -93,7 +93,7 @@ public class Spinner implements GameObject {
 	private float sumDeltaAngle = 0f;
 
 	/** Array holding the most recent rotation velocities. */
-	private float[] storedDeltaAngle;
+	private final float[] storedDeltaAngle;
 
 	/** True if the mouse cursor is pressed. */
 	private boolean isSpinning;

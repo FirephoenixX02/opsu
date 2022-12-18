@@ -117,7 +117,7 @@ public class MainMenu extends BasicGameState {
 	private Stack<Integer> previous;
 
 	/** Background alpha level (for fade-in effect). */
-	private AnimatedValue bgAlpha = new AnimatedValue(1100, 0f, BG_MAX_ALPHA, AnimationEquation.LINEAR);
+	private final AnimatedValue bgAlpha = new AnimatedValue(1100, 0f, BG_MAX_ALPHA, AnimationEquation.LINEAR);
 
 	/** Whether or not a notification was already sent upon entering. */
 	private boolean enterNotification = false;
@@ -141,7 +141,7 @@ public class MainMenu extends BasicGameState {
 	private GradientFill musicInfoFill;
 
 	/** Music info bar animation progress. */
-	private AnimatedValue musicInfoProgress = new AnimatedValue(600, 0f, 1f, AnimationEquation.OUT_CUBIC);
+	private final AnimatedValue musicInfoProgress = new AnimatedValue(600, 0f, 1f, AnimationEquation.OUT_CUBIC);
 
 	/** Options overlay. */
 	private OptionsOverlay optionsOverlay;
@@ -150,7 +150,7 @@ public class MainMenu extends BasicGameState {
 	private boolean showOptionsOverlay = false;
 
 	/** The options overlay show/hide animation progress. */
-	private AnimatedValue optionsOverlayProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
+	private final AnimatedValue optionsOverlayProgress = new AnimatedValue(500, 0f, 1f, AnimationEquation.LINEAR);
 
 	/** The user button. */
 	private UserButton userButton;
@@ -165,7 +165,7 @@ public class MainMenu extends BasicGameState {
 	private boolean showUserOverlay = false;
 
 	/** The user overlay show/hide animation progress. */
-	private AnimatedValue userOverlayProgress = new AnimatedValue(750, 0f, 1f, AnimationEquation.OUT_CUBIC);
+	private final AnimatedValue userOverlayProgress = new AnimatedValue(750, 0f, 1f, AnimationEquation.OUT_CUBIC);
 
 	// game-related variables
 	private GameContainer container;
@@ -816,7 +816,6 @@ public class MainMenu extends BasicGameState {
 			if (logo.contains(x, y, 0.25f)) {
 				SoundController.playSound(SoundEffect.MENUHIT);
 				openLogoMenu();
-				return;
 			}
 		}
 
@@ -825,10 +824,8 @@ public class MainMenu extends BasicGameState {
 			if (logo.contains(x, y, 0.25f) || playButton.contains(x, y, 0.25f)) {
 				SoundController.playSound(SoundEffect.MENUHIT);
 				enterSongMenu();
-				return;
 			} else if (exitButton.contains(x, y, 0.25f)) {
 				container.exit();
-				return;
 			}
 		}
 	}
