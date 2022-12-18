@@ -90,6 +90,10 @@ Gradle builds are built to the `build` directory.
 ## Contributing
 See the [contributing guidelines](CONTRIBUTING.md).
 
+## My Fork
+I only commit tested changes, but I do not provide support.
+
+
 ## Credits
 This software was created by Jeffrey Han
 ([@itdelatrisu](https://github.com/itdelatrisu/)).  All game concepts and
