@@ -438,7 +438,7 @@ public class DownloadNode {
 		// 'x' button
 		if (hover) {
 			Image img = GameImage.DELETE.getImage();
-			img.draw(edgeX - img.getWidth(), y + marginY);
+			img.draw(edgeX - img.getWidth(), y + marginY + 12F);
 		}
 	}
 
