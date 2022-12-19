@@ -45,7 +45,7 @@ public class OpsuConstants {
 	public static final String ISSUES_URL = "https://github.com/FirephoenixX02/opsu/issues/new?title=%s&body=%s";
 
 	/** Address containing the latest version file. */
-	public static final String VERSION_REMOTE = "https://raw.githubusercontent.com/itdelatrisu/opsu/gh-pages/version";
+	public static final String VERSION_REMOTE = "https://raw.githubusercontent.com/FirephoenixX02/opsu/master/version-remote.txt";
 
 	/** Changelog address. */
 	private static final String CHANGELOG_URL = "https://github.com/FirephoenixX02/opsu/releases/tag/%s";
