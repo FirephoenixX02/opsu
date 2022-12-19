@@ -91,8 +91,8 @@ public class DownloadsMenu extends BasicGameState {
 	 * Available beatmap download servers.
 	 */
 	private static final DownloadServer[] SERVERS = {
-			new RippleServer(),
 			new KitsuServer(),
+			new RippleServer(),
 			new NerinyanServer()
 	};
 
