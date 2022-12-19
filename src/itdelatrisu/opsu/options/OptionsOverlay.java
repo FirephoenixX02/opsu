@@ -54,239 +54,292 @@ import org.newdawn.slick.gui.TextField;
  * @author yugecin (https://github.com/yugecin) (base, heavily modified)
  */
 public class OptionsOverlay extends AbstractComponent {
-	/** Listener for events. */
-	public interface OptionsOverlayListener {
-		/** Notification that the overlay was closed. */
-		void close();
-	}
-
-	/** Whether this component is active. */
-	private boolean active;
-
-	/** The option groups to show. */
-	private final OptionGroup[] groups;
-
-	/** The group that is visible on screen. */
-	private OptionGroup activeGroup;
-
-	/** The group that is being hovered in the navigation bar. */
-	private OptionGroup hoveredNavigationGroup;
-
-	/** The event listener. */
-	private final OptionsOverlayListener listener;
-
-	/** Control images. */
-	private final Image sliderBallImg, checkOnImg, checkOffImg;
-
-	/** Control image size. */
-	private final int iconSize;
-
-	/** Search image. */
-	private final Image searchImg;
-
-	/** Target duration, in ms, of the move animation for the indicator. */
+	/**
+	 * Target duration, in ms, of the move animation for the indicator.
+	 */
 	private static final int INDICATOR_MOVE_ANIMATION_TIME = 166;
-
-	/**  Selected option indicator virtual position. */
-	private int indicatorPos;
-
-	/**  Selected option indicator render position. */
-	private int indicatorRenderPos;
-
-	/** Selected option indicator offset to next position. */
-	private int indicatorOffsetToNextPos;
-
-	/** Selected option indicator move to next position animation time past. */
-	private int indicatorMoveAnimationTime;
-
-	/** Target duration, in ms, of the fadeout animation for the indicator. */
+	/**
+	 * Target duration, in ms, of the fadeout animation for the indicator.
+	 */
 	private static final int INDICATOR_HIDE_ANIMATION_TIME = 500;
-
-	/** Selected option indicator hide animation time past. */
-	private int indicatorHideAnimationTime;
-
-	/** Buttons. */
-	private final MenuButton backButton, restartButton;
-
-	/** The top-left coordinates. */
-	private float x, y;
-
-	/** The width and height of the overlay. */
-	private final int targetWidth, height;
-
-	/** The real width of the overlay, altered by the hide/show animation */
-	private int width;
-
-	/** Size of a button in the navigation bar. */
-	private final int navButtonSize;
-
-	/** Start Y position of buttons in the navigation bar. */
-	private final int navStartY;
-
-	/** The width of the navigation bar. */
-	private final int navTargetWidth;
-
-	/** The real width of the navigation bar, altered by hiding state and animations. */
-	private int navWidth;
-
-	/** The width of the indicator in the navigation bar. */
-	private final int navIndicatorWidth;
-
-	/** How long the mouse has been hovering over the navigation bar, for animations. */
-	private int navHoverTime;
-
-	/** The current hovered option. */
-	private GameOption hoverOption;
-
-	/** The current selected option (between a mouse press and release). */
-	private GameOption selectedOption;
-
-	/** The relative offsets of the start of the options section. */
-	private final int optionStartX, optionStartY;
-
-	/** The dimensions of an option. */
-	private int optionWidth;
-	private final int optionHeight;
-
-	/** Y offset from the option position to the option text position. */
-	private final int optionTextOffsetY;
-
-	/** The size of the control images (sliderball, checkbox). */
-	private final int controlImageSize;
-
-	/** The vertical padding for the control images to vertical align them. */
-	private final int controlImagePadding;
-
-	/** The width of the grey line next to groups. */
+	/**
+	 * The width of the grey line next to groups.
+	 */
 	private static final int LINE_WIDTH = 3;
-
-	/** Right padding. */
-	private final int paddingRight;
-
-	/** Left padding to the grey line. */
-	private final int paddingLeft;
-
-	/** Left padding to the option text. */
-	private final int paddingTextLeft;
-
-	/** Y position of the options text. */
-	private final int textOptionsY;
-
-	/** Y position of the change text. */
-	private final int textChangeY;
-
-	/** Y position of the search block. */
-	private final int searchY;
-
-	/** Y offset from the search block to the search text. */
-	private final int textSearchYOffset;
-
-	/** The padding for an option group title. */
-	private final int optionGroupPadding;
-
-	/** Whether or not a slider is currently being adjusted. */
-	private boolean isAdjustingSlider;
-
-	/** The current absolute x-coordinate of the selected slider. */
-	private int sliderOptionStartX;
-
-	/** The current width of the selected slider. */
-	private int sliderOptionWidth;
-
-	/** HashMap which contains dropdown menus corresponding to options. */
-	private Map<GameOption, DropdownMenu<Object>> dropdownMenus;
-
-	/** The vertical padding to use when rendering a dropdown menu. */
-	private int dropdownMenuPaddingY;
-
-	/** The dropdown menu that is currently open. */
-	private DropdownMenu<Object> openDropdownMenu;
-
 	/**
-	 * The virtual Y position of the open dropdown menu.
-	 * Used to calculate the maximum scrolling offset.
+	 * The interval between slider movement sound effects, in ms.
 	 */
-	private int openDropdownVirtualY;
-
-	/** Kinetic scrolling. */
-	private final KineticScrolling scrolling;
-
-	/** The maximum scroll offset. */
-	private int maxScrollOffset;
-
-	/**
-	 * The y coordinate of a mouse press, recorded in {@link #mousePressed(int, int, int)}.
-	 * If this is -1 directly after a mouse press, then it was not within the overlay.
-	 */
-	private int mousePressY = -1;
-
-	/** Last mouse position recorded in {@link #update(int)}. */
-	private int prevMouseX = -1, prevMouseY = -1;
-
-	/** The delay before the next slider movement sound effect, in ms. */
-	private int sliderSoundDelay;
-
-	/** The interval between slider movement sound effects, in ms. */
 	private static final int SLIDER_SOUND_INTERVAL = 90;
-
-	/** Key entry states. */
-	private boolean keyEntryLeft = false, keyEntryRight = false;
-
-	/** Should all unprocessed events be consumed, and the overlay closed? */
-	private boolean consumeAndClose = false;
-
-	/** Whether to show the restart button. */
-	private boolean showRestartButton = false;
-
-	/** Textfield used for searching options. */
-	private final TextField searchField;
-
-	/** Last search text. */
-	private String lastSearchText;
-
-	/** The rotation of the search text for the 'invalid search' animation. */
-	private int invalidSearchImgRotation;
-
-	/** The rotation of the search image for the 'invalid search' animation. */
-	private int invalidSearchTextRotation;
-
-	/** The 'invalid search' animation progress. */
-	private final AnimatedValue invalidSearchAnimation = new AnimatedValue(500, 1f, 0f, AnimationEquation.LINEAR);
-
-	/** Desired alpha values for specific colors. */
+	/**
+	 * Desired alpha values for specific colors.
+	 */
 	private static final float
-		BG_ALPHA = 0.7f,
-		LINEALPHA = 0.8f,
-		INDICATOR_ALPHA = 0.8f;
-
-	/** Colors. */
-	private static final Color
-		COLOR_BG = new Color(Color.black),
-		COLOR_WHITE = new Color(Color.white),
-		COLOR_PINK = new Color(Colors.PINK_OPTION),
-		COLOR_CYAN = new Color(88, 218, 254),
-		COLOR_GREY = new Color(55, 55, 57),
-		COLOR_BLUE = new Color(Colors.BLUE_BACKGROUND),
-		COLOR_COMBOBOX_HOVER = new Color(185, 19, 121),
-		COLOR_INDICATOR = new Color(Color.black),
-		COLOR_NAV_BG = new Color(COLOR_BG),
-		COLOR_NAV_INDICATOR = new Color(COLOR_PINK),
-		COLOR_NAV_WHITE = new Color(COLOR_WHITE),
-		COLOR_NAV_FILTERED = new Color(37, 37, 37),
-		COLOR_NAV_INACTIVE = new Color(153, 153, 153),
-		COLOR_NAV_FILTERED_HOVERED = new Color(58, 58, 58);
-
+			BG_ALPHA = 0.7f,
+			LINEALPHA = 0.8f,
+			INDICATOR_ALPHA = 0.8f;
+	/**
+	 * The option groups to show.
+	 */
+	private final OptionGroup[] groups;
+	/**
+	 * The event listener.
+	 */
+	private final OptionsOverlayListener listener;
+	/**
+	 * Control images.
+	 */
+	private final Image sliderBallImg, checkOnImg, checkOffImg;
+	/**
+	 * Control image size.
+	 */
+	private final int iconSize;
+	/**
+	 * Search image.
+	 */
+	private final Image searchImg;
+	/**
+	 * Buttons.
+	 */
+	private final MenuButton backButton, restartButton;
+	/**
+	 * The width and height of the overlay.
+	 */
+	private final int targetWidth, height;
+	/**
+	 * Size of a button in the navigation bar.
+	 */
+	private final int navButtonSize;
+	/**
+	 * Start Y position of buttons in the navigation bar.
+	 */
+	private final int navStartY;
+	/**
+	 * The width of the navigation bar.
+	 */
+	private final int navTargetWidth;
+	/**
+	 * The width of the indicator in the navigation bar.
+	 */
+	private final int navIndicatorWidth;
+	/**
+	 * The relative offsets of the start of the options section.
+	 */
+	private final int optionStartX, optionStartY;
+	private final int optionHeight;
+	/**
+	 * Y offset from the option position to the option text position.
+	 */
+	private final int optionTextOffsetY;
+	/**
+	 * The size of the control images (sliderball, checkbox).
+	 */
+	private final int controlImageSize;
+	/**
+	 * The vertical padding for the control images to vertical align them.
+	 */
+	private final int controlImagePadding;
+	/**
+	 * Right padding.
+	 */
+	private final int paddingRight;
+	/**
+	 * Left padding to the grey line.
+	 */
+	private final int paddingLeft;
+	/**
+	 * Left padding to the option text.
+	 */
+	private final int paddingTextLeft;
+	/**
+	 * Y position of the options text.
+	 */
+	private final int textOptionsY;
+	/**
+	 * Y position of the change text.
+	 */
+	private final int textChangeY;
+	/**
+	 * Y position of the search block.
+	 */
+	private final int searchY;
+	/**
+	 * Y offset from the search block to the search text.
+	 */
+	private final int textSearchYOffset;
+	/**
+	 * The padding for an option group title.
+	 */
+	private final int optionGroupPadding;
+	/**
+	 * Kinetic scrolling.
+	 */
+	private final KineticScrolling scrolling;
+	/**
+	 * Textfield used for searching options.
+	 */
+	private final TextField searchField;
+	/**
+	 * The 'invalid search' animation progress.
+	 */
+	private final AnimatedValue invalidSearchAnimation = new AnimatedValue(500, 1f, 0f, AnimationEquation.LINEAR);
 	// game-related variables
 	private final GameContainer container;
 	private final Input input;
 	private final int containerWidth;
 	private final int containerHeight;
-
+	/**
+	 * Whether this component is active.
+	 */
+	private boolean active;
+	/**
+	 * The group that is visible on screen.
+	 */
+	private OptionGroup activeGroup;
+	/**
+	 * The group that is being hovered in the navigation bar.
+	 */
+	private OptionGroup hoveredNavigationGroup;
+	/**
+	 * Selected option indicator virtual position.
+	 */
+	private int indicatorPos;
+	/**
+	 * Selected option indicator render position.
+	 */
+	private int indicatorRenderPos;
+	/**
+	 * Selected option indicator offset to next position.
+	 */
+	private int indicatorOffsetToNextPos;
+	/**
+	 * Selected option indicator move to next position animation time past.
+	 */
+	private int indicatorMoveAnimationTime;
+	/**
+	 * Selected option indicator hide animation time past.
+	 */
+	private int indicatorHideAnimationTime;
+	/**
+	 * The top-left coordinates.
+	 */
+	private float x, y;
+	/**
+	 * The real width of the overlay, altered by the hide/show animation
+	 */
+	private int width;
+	/**
+	 * The real width of the navigation bar, altered by hiding state and animations.
+	 */
+	private int navWidth;
+	/**
+	 * How long the mouse has been hovering over the navigation bar, for animations.
+	 */
+	private int navHoverTime;
+	/**
+	 * The current hovered option.
+	 */
+	private GameOption hoverOption;
+	/**
+	 * The current selected option (between a mouse press and release).
+	 */
+	private GameOption selectedOption;
+	/**
+	 * The dimensions of an option.
+	 */
+	private int optionWidth;
+	/**
+	 * Whether or not a slider is currently being adjusted.
+	 */
+	private boolean isAdjustingSlider;
+	/**
+	 * The current absolute x-coordinate of the selected slider.
+	 */
+	private int sliderOptionStartX;
+	/**
+	 * The current width of the selected slider.
+	 */
+	private int sliderOptionWidth;
+	/**
+	 * HashMap which contains dropdown menus corresponding to options.
+	 */
+	private Map<GameOption, DropdownMenu<Object>> dropdownMenus;
+	/**
+	 * The vertical padding to use when rendering a dropdown menu.
+	 */
+	private int dropdownMenuPaddingY;
+	/**
+	 * The dropdown menu that is currently open.
+	 */
+	private DropdownMenu<Object> openDropdownMenu;
+	/**
+	 * The virtual Y position of the open dropdown menu.
+	 * Used to calculate the maximum scrolling offset.
+	 */
+	private int openDropdownVirtualY;
+	/**
+	 * The maximum scroll offset.
+	 */
+	private int maxScrollOffset;
+	/**
+	 * The y coordinate of a mouse press, recorded in {@link #mousePressed(int, int, int)}.
+	 * If this is -1 directly after a mouse press, then it was not within the overlay.
+	 */
+	private int mousePressY = -1;
+	/**
+	 * Last mouse position recorded in {@link #update(int)}.
+	 */
+	private int prevMouseX = -1, prevMouseY = -1;
+	/**
+	 * The delay before the next slider movement sound effect, in ms.
+	 */
+	private int sliderSoundDelay;
+	/**
+	 * Key entry states.
+	 */
+	private boolean keyEntryLeft = false, keyEntryRight = false;
+	/**
+	 * Should all unprocessed events be consumed, and the overlay closed?
+	 */
+	private boolean consumeAndClose = false;
+	/**
+	 * Whether to show the restart button.
+	 */
+	private boolean showRestartButton = false;
+	/**
+	 * Last search text.
+	 */
+	private String lastSearchText;	/**
+	 * Colors.
+	 */
+	private static final Color
+			COLOR_BG = new Color(Color.black),
+			COLOR_WHITE = new Color(Color.white),
+			COLOR_PINK = new Color(Colors.PINK_OPTION),
+			COLOR_CYAN = new Color(88, 218, 254),
+			COLOR_GREY = new Color(55, 55, 57),
+			COLOR_BLUE = new Color(Colors.BLUE_BACKGROUND),
+			COLOR_COMBOBOX_HOVER = new Color(185, 19, 121),
+			COLOR_INDICATOR = new Color(Color.black),
+			COLOR_NAV_BG = new Color(COLOR_BG),
+			COLOR_NAV_INDICATOR = new Color(COLOR_PINK),
+			COLOR_NAV_WHITE = new Color(COLOR_WHITE),
+			COLOR_NAV_FILTERED = new Color(37, 37, 37),
+			COLOR_NAV_INACTIVE = new Color(153, 153, 153),
+			COLOR_NAV_FILTERED_HOVERED = new Color(58, 58, 58);
+	/**
+	 * The rotation of the search text for the 'invalid search' animation.
+	 */
+	private int invalidSearchImgRotation;
+	/**
+	 * The rotation of the search image for the 'invalid search' animation.
+	 */
+	private int invalidSearchTextRotation;
 	/**
 	 * Creates the options overlay.
+	 *
 	 * @param container the game container
-	 * @param groups the option groups
-	 * @param listener the event listener
+	 * @param groups    the option groups
+	 * @param listener  the event listener
 	 */
 	public OptionsOverlay(GameContainer container, OptionGroup[] groups, OptionsOverlayListener listener) {
 		super(container);
@@ -373,25 +426,36 @@ public class OptionsOverlay extends AbstractComponent {
 	}
 
 	@Override
-	public int getX() { return (int) x; }
+	public int getX() {
+		return (int) x;
+	}
 
 	@Override
-	public int getY() { return (int) y; }
+	public int getY() {
+		return (int) y;
+	}
 
 	@Override
-	public int getWidth() { return width; }
+	public int getWidth() {
+		return width;
+	}
 
 	public void setWidth(int width) {
 		this.width = width;
 		this.optionWidth = width - optionStartX - paddingRight;
 	}
 
-	/** Returns the target width. */
-	public int getTargetWidth() { return targetWidth; }
+	/**
+	 * Returns the target width.
+	 */
+	public int getTargetWidth() {
+		return targetWidth;
+	}
 
 	/**
 	 * Sets the alpha levels of the overlay.
-	 * @param mainAlpha alpha value of the main elements
+	 *
+	 * @param mainAlpha       alpha value of the main elements
 	 * @param navigationAlpha alpha value of the navigation bar elements
 	 */
 	public void setAlpha(float mainAlpha, float navigationAlpha) {
@@ -412,10 +476,13 @@ public class OptionsOverlay extends AbstractComponent {
 	}
 
 	@Override
-	public int getHeight() { return height; }
+	public int getHeight() {
+		return height;
+	}
 
 	/**
 	 * Returns true if the coordinates are within the overlay bounds.
+	 *
 	 * @param cx the x coordinate
 	 * @param cy the y coordinate
 	 */
@@ -423,7 +490,9 @@ public class OptionsOverlay extends AbstractComponent {
 		return ((cx > x && cx < x + width) && (cy > y && cy < y + height));
 	}
 
-	/** Activates the component. */
+	/**
+	 * Activates the component.
+	 */
 	public void activate() {
 		if (active)
 			return;
@@ -454,7 +523,9 @@ public class OptionsOverlay extends AbstractComponent {
 		}
 	}
 
-	/** Deactivates the component. */
+	/**
+	 * Deactivates the component.
+	 */
 	public void deactivate() {
 		if (!active)
 			return;
@@ -468,9 +539,12 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Whether to consume all unprocessed events, and close the overlay.
+	 *
 	 * @param flag {@code true} to consume all events (default is {@code false})
 	 */
-	public void setConsumeAndClose(boolean flag) { this.consumeAndClose = flag; }
+	public void setConsumeAndClose(boolean flag) {
+		this.consumeAndClose = flag;
+	}
 
 	@Override
 	public void render(GUIContext container, Graphics g) throws SlickException {
@@ -484,14 +558,14 @@ public class OptionsOverlay extends AbstractComponent {
 		String title = "Options";
 		String subtitle = String.format("Change the way %s behaves", OpsuConstants.PROJECT_NAME);
 		Fonts.LARGE.drawString(
-			x + navButtonSize + (width - navButtonSize - Fonts.LARGE.getWidth(title)) / 2,
-			(int) (y + textOptionsY - scrolling.getPosition()),
-			title, COLOR_WHITE
+				x + navButtonSize + (width - navButtonSize - Fonts.LARGE.getWidth(title)) / 2,
+				(int) (y + textOptionsY - scrolling.getPosition()),
+				title, COLOR_WHITE
 		);
 		Fonts.MEDIUM.drawString(
-			x + navButtonSize + (width - navButtonSize - Fonts.MEDIUM.getWidth(subtitle)) / 2,
-			(int) (y + textChangeY - scrolling.getPosition()),
-			subtitle, COLOR_PINK
+				x + navButtonSize + (width - navButtonSize - Fonts.MEDIUM.getWidth(subtitle)) / 2,
+				(int) (y + textChangeY - scrolling.getPosition()),
+				subtitle, COLOR_PINK
 		);
 
 		// selected option indicator
@@ -535,9 +609,9 @@ public class OptionsOverlay extends AbstractComponent {
 		if (!invalidSearchAnimation.isFinished())
 			g.rotate(searchTextX + searchImg.getWidth() / 2, ypos, invalidProgress * invalidSearchImgRotation);
 		searchImg.draw(
-			searchTextX,
-			ypos + Fonts.LARGE.getLineHeight() * 0.25f,
-			searchColor
+				searchTextX,
+				ypos + Fonts.LARGE.getLineHeight() * 0.25f,
+				searchColor
 		);
 		g.resetTransform();
 
@@ -571,7 +645,7 @@ public class OptionsOverlay extends AbstractComponent {
 			g.fillRect(0, 0, containerWidth, containerHeight);
 			g.setColor(COLOR_WHITE);
 			String prompt = keyEntryLeft ?
-				"Press the new left-click key." : "Press the new right-click key.";
+					"Press the new left-click key." : "Press the new right-click key.";
 			String subtext = "Click anywhere or hit ESC to cancel.";
 			float promptY = (containerHeight - Fonts.XLARGE.getLineHeight() - Fonts.DEFAULT.getLineHeight()) / 2 - 2;
 			float subtextY = promptY + Fonts.XLARGE.getLineHeight() + 2;
@@ -582,6 +656,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders the navigation bar
+	 *
 	 * @param g the graphics context
 	 */
 	private void renderNavigation(Graphics g) {
@@ -631,6 +706,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders all options.
+	 *
 	 * @param g the graphics context
 	 */
 	private void renderOptions(Graphics g) throws SlickException {
@@ -649,9 +725,9 @@ public class OptionsOverlay extends AbstractComponent {
 				if (group != activeGroup)
 					COLOR_CYAN.a *= 0.2f;
 				Fonts.XLARGE.drawString(
-					x + width - Fonts.XLARGE.getWidth(group.getName()) - paddingRight,
-					(int) (cy + Fonts.XLARGE.getLineHeight() * 0.3f),
-					group.getName(), COLOR_CYAN
+						x + width - Fonts.XLARGE.getWidth(group.getName()) - paddingRight,
+						(int) (cy + Fonts.XLARGE.getLineHeight() * 0.3f),
+						group.getName(), COLOR_CYAN
 				);
 				COLOR_CYAN.a = previousAlpha;
 			} else {
@@ -720,9 +796,10 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders the given option.
-	 * @param g the graphics context
+	 *
+	 * @param g      the graphics context
 	 * @param option the game option
-	 * @param cy the y coordinate
+	 * @param cy     the y coordinate
 	 */
 	private void renderOption(Graphics g, GameOption option, int cy) throws SlickException {
 		OptionType type = option.getType();
@@ -739,9 +816,10 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders a list option.
-	 * @param g the graphics context
+	 *
+	 * @param g      the graphics context
 	 * @param option the game option
-	 * @param cy the y coordinate
+	 * @param cy     the y coordinate
 	 */
 	private void renderListOption(Graphics g, GameOption option, int cy) throws SlickException {
 		DropdownMenu<Object> dropdown = dropdownMenus.get(option);
@@ -773,8 +851,9 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders a boolean option.
+	 *
 	 * @param option the game option
-	 * @param cy the y coordinate
+	 * @param cy     the y coordinate
 	 */
 	private void renderCheckOption(GameOption option, int cy) {
 		// draw checkbox
@@ -789,9 +868,10 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders a slider option.
-	 * @param g the graphics context
+	 *
+	 * @param g      the graphics context
 	 * @param option the game option
-	 * @param cy the y coordinate
+	 * @param cy     the y coordinate
 	 */
 	private void renderSliderOption(Graphics g, GameOption option, int cy) {
 		// draw option name and value
@@ -835,8 +915,9 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Renders a generic option.
+	 *
 	 * @param option the game option
-	 * @param cy the y coordinate
+	 * @param cy     the y coordinate
 	 */
 	private void renderGenericOption(GameOption option, int cy) {
 		// draw option name and value
@@ -848,6 +929,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Updates the overlay.
+	 *
 	 * @param delta the delta interval since the last call
 	 */
 	public void update(int delta) {
@@ -907,6 +989,16 @@ public class OptionsOverlay extends AbstractComponent {
 			}
 		}
 
+		// Made by NickGuz(https://github.com/NickGuz)
+		// increment or decrement slider value with arrow keys
+		if (hoverOption != null && hoverOption.getType() == OptionType.NUMERIC) {
+			if (input.isKeyPressed(Input.KEY_RIGHT))
+				adjustSliderWithKey(Input.KEY_RIGHT);
+			else if (input.isKeyPressed(Input.KEY_LEFT))
+				adjustSliderWithKey(Input.KEY_LEFT);
+		} else
+			input.clearKeyPressedRecord();
+
 		if (!mouseMoved)
 			return;
 
@@ -917,6 +1009,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Updates the "hovered" navigation button based on the current mouse coordinates.
+	 *
 	 * @param mouseX the mouse x coordinate
 	 * @param mouseY the mouse y coordinate
 	 */
@@ -957,6 +1050,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Updates a slider option based on the current mouse coordinates.
+	 *
 	 * @param mouseX the mouse x coordinate
 	 * @param mouseY the mouse y coordinate
 	 */
@@ -995,6 +1089,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Updates the "hovered" option based on the current mouse coordinates.
+	 *
 	 * @param mouseX the mouse x coordinate
 	 * @param mouseY the mouse y coordinate
 	 */
@@ -1018,7 +1113,9 @@ public class OptionsOverlay extends AbstractComponent {
 		hoverOption = getOptionAtPosition(mouseX, mouseY);
 	}
 
-	/** Resets the open dropdown menu, if any. */
+	/**
+	 * Resets the open dropdown menu, if any.
+	 */
 	private void resetOpenDropdownMenu() {
 		if (openDropdownMenu != null) {
 			openDropdownMenu.reset();
@@ -1026,7 +1123,9 @@ public class OptionsOverlay extends AbstractComponent {
 		}
 	}
 
-	/** Shows or hides an option. */
+	/**
+	 * Shows or hides an option.
+	 */
 	private void toggleOption(GameOption option, boolean visible) {
 		option.setVisible(visible);
 
@@ -1336,6 +1435,7 @@ public class OptionsOverlay extends AbstractComponent {
 
 	/**
 	 * Handles a slider adjustment to the given mouse coordinates.
+	 *
 	 * @param mouseX the mouse x coordinate
 	 * @param mouseY the mouse y coordinate
 	 */
@@ -1353,7 +1453,30 @@ public class OptionsOverlay extends AbstractComponent {
 	}
 
 	/**
+	 * Increments or decrements slider value if user presses right or left arrow key.
+	 *
+	 * @param key the pressed key
+	 */
+	private void adjustSliderWithKey(int key) {
+		int oldSliderValue = hoverOption.getIntegerValue();
+
+		// increment or decrement value
+		if (key == Input.KEY_RIGHT) {
+			hoverOption.setValue(oldSliderValue + 1);
+		} else if (key == Input.KEY_LEFT) {
+			hoverOption.setValue(oldSliderValue - 1);
+		}
+
+		// play sound effect
+		if (hoverOption.getIntegerValue() != oldSliderValue && sliderSoundDelay == 0) {
+			sliderSoundDelay = SLIDER_SOUND_INTERVAL;
+			SoundController.playSound(SoundEffect.MENUCLICK);
+		}
+	}
+
+	/**
 	 * Returns the option at the given position, using the current scroll offset.
+	 *
 	 * @param cx the x coordinate
 	 * @param cy the y coordinate
 	 * @return the option, or {@code null} if none
@@ -1392,11 +1515,14 @@ public class OptionsOverlay extends AbstractComponent {
 		}
 		return null;
 	}
+	// Made by NickGuz(https://github.com/NickGuz)
 
 	@Override
 	public void setFocus(boolean focus) { /* does not currently use the "focus" concept */ }
 
-	/** Creates the dropdown menus. */
+	/**
+	 * Creates the dropdown menus.
+	 */
 	private void createDropdownMenus() {
 		this.dropdownMenus = new IdentityHashMap<GameOption, DropdownMenu<Object>>();
 		for (OptionGroup group : groups) {
@@ -1458,4 +1584,16 @@ public class OptionsOverlay extends AbstractComponent {
 		backButton.resetHover();
 		restartButton.resetHover();
 	}
+
+	/**
+	 * Listener for events.
+	 */
+	public interface OptionsOverlayListener {
+		/**
+		 * Notification that the overlay was closed.
+		 */
+		void close();
+	}
+
+
 }
