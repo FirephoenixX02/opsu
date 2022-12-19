@@ -1,0 +1,2 @@
+version=0.16.4
+file=https://github.com/FirephoenixX02/opsu/releases/download/0.16.4/opsu-0.16.4.jar
