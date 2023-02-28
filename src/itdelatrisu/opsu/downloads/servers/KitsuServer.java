@@ -35,9 +35,13 @@ public class KitsuServer extends DownloadServer {
 
 	private static final String DOWNLOAD_URL = "https://kitsu.moe/api/d/%d";
 
-	private static final String SEARCH_URL = "https://kitsu.moe/api/search?query=%s";
+    private static final String SEARCH_URL = "https://kitsu.moe/api/search?mode=0&query=%s";
 
-	private static final String HOME_URL = "https://kitsu.moe/api/search?offset=%d&amount=%d";
+    private static final String HOME_URL = "https://kitsu.moe/api/search?mode=0&offset=%d&amount=%d";
+
+    /* Query parameters */
+    private static final String RANKED_QUERY = "&status=1";
+
 
 	/**
 	 * Maximum beatmaps displayed per page.
@@ -69,11 +73,16 @@ public class KitsuServer extends DownloadServer {
 			// read JSON
 			int resultIndex = (page - 1) * PAGE_LIMIT;
 			String search;
-			if (query.isEmpty()) {
-				search = String.format(HOME_URL, resultIndex, PAGE_LIMIT);
-			} else {
-				search = String.format(SEARCH_URL, URLEncoder.encode(query, "UTF-8"));
-			}
+			if (query.isEmpty())
+            {
+               if(!rankedOnly) search = String.format(HOME_URL, resultIndex, PAGE_LIMIT);
+               else search = String.format(HOME_URL + RANKED_QUERY, resultIndex, PAGE_LIMIT);
+            }
+            else
+            {
+                if(!rankedOnly)  search = String.format(SEARCH_URL, URLEncoder.encode(query, "UTF-8"));
+                else search = String.format(SEARCH_URL + RANKED_QUERY, URLEncoder.encode(query, "UTF-8"));
+            }
 			JSONArray arr = Utils.readJsonArrayFromUrl(new URL(search));
 			if (arr == null) {
 				this.totalResults = -1;
